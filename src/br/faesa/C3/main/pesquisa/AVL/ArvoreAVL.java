@@ -11,22 +11,12 @@ public class ArvoreAVL {
         this.balancear = false;
     }
 
-    // a) Método pesquisar
-
-    /**
-     * Pesquisa publicamente por um número na árvore.
-     *
-     * @param num O número (chave) a ser pesquisado.
-     * @return O nó (NoAVL) que contém o número, ou null se não for encontrado.
-     */
+    // a) função pesquisar
     public NoAVL pesquisar(int num) {
         // Inicia a busca recursiva a partir da raiz
         return pesquisarRecursivo(num, this.raiz);
     }
 
-    /**
-     * Método auxiliar privado que implementa a lógica da busca recursiva.
-     */
     private NoAVL pesquisarRecursivo(int num, NoAVL noAtual) {
         // Caso base 1: A árvore está vazia ou o nó não foi encontrado (chegou a um nulo)
         if (noAtual == null) {
@@ -48,7 +38,7 @@ public class ArvoreAVL {
         }
     }
 
-    // b) Método inserir
+    // b) função inserir
     public void inserir(Integer num) {
         this.raiz = this.inserir(num, this.raiz);
     }
@@ -73,7 +63,7 @@ public class ArvoreAVL {
         }
     }
 
-    // c) Método para verificar se é necessário o balanceamento para direita do nó
+    // c) função para verificar se é necessário o balanceamento para direita do nó
     private NoAVL balancearDir(NoAVL no) {
         if (this.balancear) {
             switch (no.getFatorBalanceamento()) {
@@ -91,7 +81,7 @@ public class ArvoreAVL {
         return no;
     }
 
-    // d) Método para verificar se é necessário o balanceamento para esquerda do nó
+    // d) função para verificar se é necessário o balanceamento para esquerda do nó
     private NoAVL balancearEsq(NoAVL no) {
         if (this.balancear) {
             switch (no.getFatorBalanceamento()) {
@@ -109,7 +99,7 @@ public class ArvoreAVL {
         return no;
     }
 
-    // e) Método para realizar ROTAÇÃO à DIREITA
+    // e) função para realizar ROTAÇÃO à DIREITA
     // (RD) e ROTAÇÃO DUPLA à DIREITA (RDD)
     private NoAVL rotaçãoDireita(NoAVL no) {
         NoAVL temp1, temp2;
@@ -147,7 +137,7 @@ public class ArvoreAVL {
         return no;
     }
 
-    // f) Método para realizar ROTAÇÃO à
+    // f) função para realizar ROTAÇÃO à
     // ESQUERDA (RE) e ROTAÇÃO DUPLA à
     // ESQUERDA (RDE)
     private NoAVL rotaçãoEsquerda(NoAVL no) {
@@ -182,5 +172,105 @@ public class ArvoreAVL {
         no.setFatorBalanceamento((byte) 0);
         this.balancear = false;
         return no;
+    }
+
+    // Métodos para visualização da árvore
+
+    // Traversal em ordem (esquerda, raiz, direita)
+    public void emOrdem() {
+        System.out.print("Em ordem: ");
+        emOrdemRecursivo(this.raiz);
+        System.out.println();
+    }
+
+    private void emOrdemRecursivo(NoAVL no) {
+        if (no != null) {
+            emOrdemRecursivo(no.getEsq());
+            System.out.print(no.getNum() + " ");
+            emOrdemRecursivo(no.getDir());
+        }
+    }
+
+    // Traversal pré-ordem (raiz, esquerda, direita)
+    public void preOrdem() {
+        System.out.print("Pré-ordem: ");
+        preOrdemRecursivo(this.raiz);
+        System.out.println();
+    }
+
+    private void preOrdemRecursivo(NoAVL no) {
+        if (no != null) {
+            System.out.print(no.getNum() + " ");
+            preOrdemRecursivo(no.getEsq());
+            preOrdemRecursivo(no.getDir());
+        }
+    }
+
+    // Traversal pós-ordem (esquerda, direita, raiz)
+    public void posOrdem() {
+        System.out.print("Pós-ordem: ");
+        posOrdemRecursivo(this.raiz);
+        System.out.println();
+    }
+
+    private void posOrdemRecursivo(NoAVL no) {
+        if (no != null) {
+            posOrdemRecursivo(no.getEsq());
+            posOrdemRecursivo(no.getDir());
+            System.out.print(no.getNum() + " ");
+        }
+    }
+
+    // Exibe a estrutura da árvore de forma visual
+    public void mostrarEstrutura() {
+        System.out.println("Estrutura da Árvore AVL:");
+        if (this.raiz == null) {
+            System.out.println("Árvore vazia");
+        } else {
+            mostrarEstruturaRecursivo(this.raiz, "", true);
+        }
+    }
+
+    private void mostrarEstruturaRecursivo(NoAVL no, String prefixo, boolean isUltimo) {
+        if (no != null) {
+            System.out.println(prefixo + (isUltimo ? "└── " : "├── ") + 
+                             no.getNum() + " (FB: " + no.getFatorBalanceamento() + ")");
+
+            String novoPrefixo = prefixo + (isUltimo ? "    " : "│   ");
+
+            // Primeiro mostra o filho direito (aparece em cima)
+            if (no.getDir() != null || no.getEsq() != null) {
+                mostrarEstruturaRecursivo(no.getDir(), novoPrefixo, no.getEsq() == null);
+                mostrarEstruturaRecursivo(no.getEsq(), novoPrefixo, true);
+            }
+        }
+    }
+
+    // função para verificar se a árvore está vazia
+    public boolean estaVazia() {
+        return this.raiz == null;
+    }
+
+    // função para obter a altura da árvore
+    public int getAltura() {
+        if (this.raiz == null) {
+            return 0; // Árvore vazia tem altura 0
+        }
+        return getAlturaRecursivo(this.raiz);
+    }
+
+    private int getAlturaRecursivo(NoAVL no) {
+        if (no == null) {
+            return 0;
+        }
+        int alturaEsq = getAlturaRecursivo(no.getEsq());
+        int alturaDir = getAlturaRecursivo(no.getDir());
+
+        // Se é uma folha (sem filhos), altura = 0
+        if (no.getEsq() == null && no.getDir() == null) {
+            return 0;
+        }
+
+        return Math.max(alturaEsq, alturaDir) + 1;
     }
 }
