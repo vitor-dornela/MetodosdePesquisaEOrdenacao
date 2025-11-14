@@ -7,9 +7,8 @@ public class NoAVL {
 
     public NoAVL (Integer num) {
         this.num = num;
-        this.fatorBalanceamento = 0; // [cite: 140]
+        this.fatorBalanceamento = 0;
     }
-    // E todos os gets e sets necessários [cite: 141]
 
     // --- Métodos Get/Set
     public Integer getNum() { return num; }
@@ -20,9 +19,5 @@ public class NoAVL {
     public int getFatorBalanceamento() { return fatorBalanceamento; }
     public void setFatorBalanceamento(int fatorBalanceamento) {
         this.fatorBalanceamento = fatorBalanceamento;
-    }
-    // O PDF menciona (byte) mas o atributo é int [cite: 136, 230]
-    public void setFatorBalanceamento(byte fator) {
-        this.fatorBalanceamento = (int)fator;
     }
 }
