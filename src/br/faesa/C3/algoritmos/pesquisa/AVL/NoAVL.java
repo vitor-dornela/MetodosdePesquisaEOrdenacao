@@ -1,4 +1,4 @@
-package br.faesa.C3.main.pesquisa.AVL;
+package br.faesa.C3.algoritmos.pesquisa.AVL;
 
 public class NoAVL {
     private Integer num;

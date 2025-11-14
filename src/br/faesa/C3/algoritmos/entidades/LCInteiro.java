@@ -1,4 +1,4 @@
-package br.faesa.C3.main.entidades;
+package br.faesa.C3.algoritmos.entidades;
 
 public class LCInteiro {
     private Integer[] lista;

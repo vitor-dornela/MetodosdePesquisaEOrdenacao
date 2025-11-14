@@ -1,5 +1,5 @@
-package br.faesa.C3.main.ordenacao;
-import br.faesa.C3.main.entidades.LCInteiro;
+package br.faesa.C3.algoritmos.ordenacao;
+import br.faesa.C3.algoritmos.entidades.LCInteiro;
 
 
 public class QuickSort {

@@ -1,7 +1,7 @@
-import br.faesa.C3.main.entidades.LCInteiro;
-import br.faesa.C3.main.ordenacao.QuickSort;
-import br.faesa.C3.main.pesquisa.AVL.ArvoreAVL;
-import br.faesa.C3.main.pesquisa.AVL.NoAVL;
+import br.faesa.C3.algoritmos.entidades.LCInteiro;
+import br.faesa.C3.algoritmos.ordenacao.QuickSort;
+import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVL;
+import br.faesa.C3.algoritmos.pesquisa.AVL.NoAVL;
 
 public class Main {
 
