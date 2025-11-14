@@ -186,6 +186,53 @@ public class LCInteiro {
         return true;
     }
 
+    public void quicksort () {
+        // Chama o método recursivo 'ordena' para ordenar
+        // o array inteiro (da posição 0 até quant-1)
+        ordena (0, this.quant-1);
+    }
+
+    /**
+     * Método privado e recursivo que implementa a lógica
+     * "dividir para conquistar" do Quick Sort.
+     */
+    private void ordena (int esq, int dir) {
+        int pivo, i = esq, j = dir, temp;
+
+        // 1. Escolhe o pivô (elemento do meio)
+        pivo = this.lista[(i + j) / 2];
+
+        // 2. Particiona o array
+        do {
+            // Encontra um elemento à esquerda que é >= pivô
+            while (this.lista[i] < pivo) {
+                i++;
+            }
+
+            // Encontra um elemento à direita que é <= pivô
+            while (this.lista[j] > pivo) {
+                j--;
+            }
+
+            // 3. Se os ponteiros não se cruzaram, troca os elementos
+            if (i <= j) {
+                temp = this.lista[i];
+                this.lista[i] = this.lista[j];
+                this.lista[j] = temp;
+                i++;
+                j--;
+            }
+        } while (i <= j);
+
+        // 4. Chama a si mesmo recursivamente para as duas sub-listas
+        if (esq < j) {
+            ordena (esq, j);
+        }
+        if (i < dir) {
+            ordena (i, dir);
+        }
+    }
+
 
 
 
