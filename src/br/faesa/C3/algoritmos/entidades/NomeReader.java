@@ -1,10 +1,12 @@
+package br.faesa.C3.algoritmos.entidades;
+
 import java.util.List;
 
 public class NomeReader {
 
     // Lê o arquivo nome.txt que está no classpath
     public static List<String> ler() {
-        return ArquivoUtil.lerArquivo("/nome.txt");
+        return ArquivoUtil.lerArquivo("/br/faesa/C3/dados/nome.txt");
     }
 
     public static void main(String[] args) {

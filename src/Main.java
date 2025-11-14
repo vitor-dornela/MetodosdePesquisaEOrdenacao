@@ -1,4 +1,5 @@
 import br.faesa.C3.algoritmos.entidades.LCInteiro;
+import br.faesa.C3.algoritmos.ordenacao.HeapSort;
 import br.faesa.C3.algoritmos.ordenacao.QuickSort;
 import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVL;
 import br.faesa.C3.algoritmos.pesquisa.AVL.NoAVL;
@@ -23,9 +24,13 @@ public class Main {
         QuickSort.sortList(minhaLista);
         System.out.println("Ordenado com QuickSort: " + minhaLista.toString());
 
+        // HeapSort
+        HeapSort.sortList(minhaLista);
+        System.out.println("Ordenado com HeapSort: " + minhaLista.toString());
+
+
+
         System.out.println("\n=== TESTE ÁRVORE AVL ===");
-
-
         // Testes algoritmos de pesquisa
         // Árvore AVL
         ArvoreAVL arvoreAVL = new ArvoreAVL();
