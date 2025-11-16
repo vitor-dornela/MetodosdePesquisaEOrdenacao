@@ -30,8 +30,8 @@ public class ExemploOrdenacaoReservas {
      * Carrega, ordena e salva um dataset específico.
      */
     private static void processarDataset(String nomeDataset) {
-        String caminhoEntrada = "/br/faesa/C3/dados/" + nomeDataset + ".txt";
-        String caminhoSaida = "src/br/faesa/C3/dados/" + nomeDataset + "_ordenado.txt";
+        String caminhoEntrada = "/br/faesa/C3/dados/brutos/" + nomeDataset + ".txt";
+        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + nomeDataset + "_ordenado.txt";
 
         try {
             System.out.println("Processando: " + nomeDataset);

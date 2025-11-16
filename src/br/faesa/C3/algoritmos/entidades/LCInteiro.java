@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.entidades;
 
-public class LCInteiro {
+public class LCInteiro implements Ordenavel {
     private Integer[] lista;
     private int quant;
 

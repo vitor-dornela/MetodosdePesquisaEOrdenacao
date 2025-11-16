@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.entidades;
 
-public class LCItem {
+public class LCItem implements Ordenavel {
 
     private Item[] lista;
     private int quant;
@@ -133,21 +133,86 @@ public class LCItem {
 
     /**
      * Ordena a lista usando HeapSort.
-     * Usa a implementação standalone da classe HeapSort.
      */
     public void heapsort() {
-        if (this.quant > 1) {
-            br.faesa.C3.algoritmos.ordenacao.HeapSort.sort(this.lista, this.quant);
+        int dir = quant - 1, esq = (dir - 1) / 2;
+        Item temp;
+
+        while (esq >= 0) {
+            refazheap(esq, this.quant - 1);
+            esq--;
         }
+        
+        while (dir > 0) {
+            temp = this.lista[0];
+            this.lista[0] = this.lista[dir];
+            this.lista[dir] = temp;
+            dir--;
+            refazheap(0, dir);
+        }
+    }
+
+    private void refazheap(int esq, int dir) {
+        int i = esq, maiorFilho = 2 * i + 1;
+        Item raiz = this.lista[i];
+        boolean heap = false;
+
+        while ((maiorFilho <= dir) && (!heap)) {
+            if (maiorFilho < dir)
+                if (this.lista[maiorFilho].compareTo(this.lista[maiorFilho + 1]) < 0)
+                    maiorFilho++;
+            if (raiz.compareTo(this.lista[maiorFilho]) < 0) {
+                this.lista[i] = this.lista[maiorFilho];
+                i = maiorFilho;
+                maiorFilho = 2 * i + 1;
+            } else
+                heap = true;
+        }
+        this.lista[i] = raiz;
     }
 
     /**
      * Ordena a lista usando QuickSort.
-     * Usa a implementação standalone da classe QuickSort.
      */
     public void quicksort() {
-        if (this.quant > 1) {
-            br.faesa.C3.algoritmos.ordenacao.QuickSort.sort(this.lista, this.quant);
+        ordena(0, this.quant - 1);
+    }
+
+    private void ordena(int esq, int dir) {
+        Item pivo, temp;
+        int i = esq, j = dir;
+
+        // 1. Escolhe o pivô (elemento do meio)
+        pivo = this.lista[(i + j) / 2];
+
+        // 2. Particiona o array
+        do {
+            // Encontra um elemento à esquerda que é >= pivô
+            while (this.lista[i].compareTo(pivo) < 0) {
+                i++;
+            }
+
+            // Encontra um elemento à direita que é <= pivô
+            while (this.lista[j].compareTo(pivo) > 0) {
+                j--;
+            }
+
+            // 3. Se os ponteiros não se cruzaram, troca os elementos
+            if (i <= j) {
+                temp = this.lista[i];
+                this.lista[i] = this.lista[j];
+                this.lista[j] = temp;
+                i++;
+                j--;
+            }
+        } while (i <= j);
+
+        // 4. Chama a si mesmo recursivamente para as duas sub-listas
+        if (esq < j) {
+            ordena(esq, j);
+        }
+        if (i < dir) {
+            ordena(i, dir);
         }
     }
 
