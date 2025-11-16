@@ -1,12 +1,49 @@
 package br.faesa.C3.algoritmos.entidades;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe para carregar arquivos de reservas do formato:
- * R000001;NOME;V947;21/04/2024;167C
+ * Classe para leitura de arquivos do classpath.
  */
-public class ReservaReader {
+public class LeArquivo {
+
+    /**
+     * Abre um arquivo dentro do classpath.
+     */
+    public static BufferedReader abrirRecurso(String caminho) {
+        InputStream input = LeArquivo.class.getResourceAsStream(caminho);
+
+        if (input == null) {
+            throw new RuntimeException("Arquivo não encontrado: " + caminho);
+        }
+
+        return new BufferedReader(new InputStreamReader(input));
+    }
+
+    /**
+     * Lê todas as linhas e retorna uma lista.
+     */
+    public static List<String> lerLinhas(String caminho) {
+        List<String> linhas = new ArrayList<>();
+
+        try (BufferedReader br = abrirRecurso(caminho)) {
+            String linha;
+
+            while ((linha = br.readLine()) != null) {
+                linhas.add(linha);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return linhas;
+    }
 
     /**
      * Lê um arquivo de reservas e retorna uma LCItem preenchida.
@@ -14,13 +51,13 @@ public class ReservaReader {
      * @return LCItem com todas as reservas carregadas
      */
     public static LCItem lerReservas(String caminhoArquivo) {
-        List<String> linhas = ArquivoUtil.lerArquivo(caminhoArquivo);
+        List<String> linhas = lerLinhas(caminhoArquivo);
         
         // Cria lista com tamanho apropriado
         LCItem lista = new LCItem(linhas.size());
         
         for (String linha : linhas) {
-            Item item = parseLinha(linha);
+            Item item = parseReserva(linha);
             if (item != null) {
                 lista.insereFinal(item);
             }
@@ -32,7 +69,7 @@ public class ReservaReader {
     /**
      * Faz o parse de uma linha no formato: R000001;NOME;V947;21/04/2024;167C
      */
-    private static Item parseLinha(String linha) {
+    private static Item parseReserva(String linha) {
         if (linha == null || linha.trim().isEmpty()) {
             return null;
         }
@@ -51,21 +88,5 @@ public class ReservaReader {
         String assento = partes[4].trim();
         
         return new Item(chave, nome, codigo_voo, data, assento);
-    }
-
-    /**
-     * Método de teste
-     */
-    public static void main(String[] args) {
-        System.out.println("Carregando arquivo de reservas...");
-        
-        LCItem reservas = lerReservas("/br/faesa/C3/dados/Reserva1000alea.txt");
-        
-        System.out.println("Total de reservas carregadas: " + reservas.getQuant());
-        System.out.println("\nPrimeiras 5 reservas:");
-        
-        for (int i = 0; i < Math.min(5, reservas.getQuant()); i++) {
-            System.out.println(reservas.getItem(i).toStringFormatado());
-        }
     }
 }

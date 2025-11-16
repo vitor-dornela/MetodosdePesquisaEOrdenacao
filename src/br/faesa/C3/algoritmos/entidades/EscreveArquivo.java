@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Classe utilitária para escrever dados ordenados em arquivo.
  */
-public class ArquivoEscritor {
+public class EscreveArquivo {
 
     /**
      * Salva uma LCItem em arquivo no formato CSV (separado por ponto e vírgula).

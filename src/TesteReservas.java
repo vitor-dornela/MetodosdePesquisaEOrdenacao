@@ -8,10 +8,10 @@ public class TesteReservas {
         System.out.println("=== TESTE DE CARREGAMENTO E ORDENAÇÃO ===\n");
         
         
-        // Teste de carregamento de arquivo
-        System.out.println("\nCarregando arquivo de reservas:");
+        // 5. Teste de carregamento de arquivo
+        System.out.println("\n5. Carregando arquivo de reservas:");
         try {
-            LCItem reservas = ReservaReader.lerReservas("/br/faesa/C3/dados/Reserva1000alea.txt");
+            LCItem reservas = LeArquivo.lerReservas("/br/faesa/C3/dados/Reserva1000alea.txt");
             System.out.println("Carregadas " + reservas.getQuant() + " reservas");
             
             System.out.println("\nPrimeiras 5 reservas (antes de ordenar):");
@@ -33,7 +33,7 @@ public class TesteReservas {
             
             // Salvar
             System.out.println("\n6. Salvando arquivo ordenado:");
-            ArquivoEscritor.salvarReservas(reservas, "src/br/faesa/C3/dados/teste_ordenado.txt");
+            EscreveArquivo.salvarReservas(reservas, "src/br/faesa/C3/dados/teste_ordenado.txt");
             
         } catch (Exception e) {
             System.err.println("Erro: " + e.getMessage());

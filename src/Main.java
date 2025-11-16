@@ -21,11 +21,11 @@ public class Main {
 
         // Testes algoritmos de ordenação
         // QuickSort
-        QuickSort.sortList(minhaLista);
+        QuickSort.sort(minhaLista);
         System.out.println("Ordenado com QuickSort: " + minhaLista.toString());
 
         // HeapSort
-        HeapSort.sortList(minhaLista);
+        HeapSort.sort(minhaLista);
         System.out.println("Ordenado com HeapSort: " + minhaLista.toString());
 
 

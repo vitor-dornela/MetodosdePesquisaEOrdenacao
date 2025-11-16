@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Exemplo de uso: Carregar datasets, ordenar com HeapSort e salvar resultados.
  */
-public class ExemploOrdenacaoReservas {
+public class OrdenacaoReservas {
 
     public static void main(String[] args) {
         // Array com todos os datasets disponíveis
@@ -31,14 +31,14 @@ public class ExemploOrdenacaoReservas {
      */
     private static void processarDataset(String nomeDataset) {
         String caminhoEntrada = "/br/faesa/C3/dados/brutos/" + nomeDataset + ".txt";
-        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + nomeDataset + "_ordenado.txt";
+        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + "heap" +nomeDataset + ".txt";
 
         try {
             System.out.println("Processando: " + nomeDataset);
 
             // 1. Carrega o dataset
             long inicio = System.currentTimeMillis();
-            LCItem reservas = ReservaReader.lerReservas(caminhoEntrada);
+            LCItem reservas = LeArquivo.lerReservas(caminhoEntrada);
             long tempoCarregamento = System.currentTimeMillis() - inicio;
 
             System.out.println("  - Carregadas " + reservas.getQuant() + " reservas em " + 
@@ -58,10 +58,10 @@ public class ExemploOrdenacaoReservas {
             }
 
             // 4. Salva o resultado
-            ArquivoEscritor.salvarReservas(reservas, caminhoSaida);
+            EscreveArquivo.salvarReservas(reservas, caminhoSaida);
 
             // 5. Salva estatísticas
-            ArquivoEscritor.salvarEstatisticas(
+            EscreveArquivo.salvarEstatisticas(
                 "src/br/faesa/C3/dados/estatisticas.csv",
                 nomeDataset,
                 "HeapSort",
