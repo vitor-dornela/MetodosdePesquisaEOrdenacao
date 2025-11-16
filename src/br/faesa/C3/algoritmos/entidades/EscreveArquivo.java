@@ -59,15 +59,24 @@ public class EscreveArquivo {
      * @param caminhoArquivo Caminho do arquivo de estatísticas
      * @param nomeDataset Nome do dataset
      * @param algoritmo Nome do algoritmo usado
-     * @param tempoMs Tempo de execução em milissegundos
+     * @param tempos Array com os 5 tempos de execução
+     * @param media Média dos tempos
      * @param numElementos Número de elementos ordenados
+     * @param primeiraLinha Se true, cria um novo arquivo; se false, adiciona ao arquivo existente
      * @throws IOException Se houver erro ao escrever
      */
     public static void salvarEstatisticas(String caminhoArquivo, String nomeDataset, 
-            String algoritmo, long tempoMs, int numElementos) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo, true))) {
-            String linha = String.format("%s;%s;%d;%d ms", 
-                nomeDataset, algoritmo, numElementos, tempoMs);
+            String algoritmo, long[] tempos, double media, int numElementos, boolean primeiraLinha) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo, !primeiraLinha))) {
+            if (primeiraLinha) {
+                // Cabeçalho
+                writer.write("Dataset;Algoritmo;Elementos;T1(ms);T2(ms);T3(ms);T4(ms);T5(ms);Media(ms)");
+                writer.newLine();
+            }
+            
+            String linha = String.format("%s;%s;%d;%d;%d;%d;%d;%d;%.2f", 
+                nomeDataset, algoritmo, numElementos, 
+                tempos[0], tempos[1], tempos[2], tempos[3], tempos[4], media);
             writer.write(linha);
             writer.newLine();
         }

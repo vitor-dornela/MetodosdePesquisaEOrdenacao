@@ -31,7 +31,7 @@ public class OrdenacaoReservas {
      */
     private static void processarDataset(String nomeDataset) {
         String caminhoEntrada = "/br/faesa/C3/dados/brutos/" + nomeDataset + ".txt";
-        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + "heap" +nomeDataset + ".txt";
+        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + "heap" + nomeDataset + ".txt";
 
         try {
             System.out.println("Processando: " + nomeDataset);
@@ -44,29 +44,48 @@ public class OrdenacaoReservas {
             System.out.println("  - Carregadas " + reservas.getQuant() + " reservas em " + 
                                tempoCarregamento + " ms");
 
-            // 2. Ordena usando HeapSort (por nome, depois por chave)
-            inicio = System.currentTimeMillis();
-            reservas.heapsort();
-            long tempoOrdenacao = System.currentTimeMillis() - inicio;
-
-            System.out.println("  - Ordenado em " + tempoOrdenacao + " ms");
-
-            // 3. Mostra primeiras 3 reservas ordenadas
-            System.out.println("  - Primeiras 3 após ordenação:");
-            for (int i = 0; i < Math.min(3, reservas.getQuant()); i++) {
-                System.out.println("    " + reservas.getItem(i).toStringFormatado());
+            // 2. Ordena usando HeapSort 5 vezes e calcula a média
+            long[] tempos = new long[5];
+            System.out.println("  - Executando HeapSort 5 vezes:");
+            
+            for (int i = 0; i < 5; i++) {
+                // Recarrega o dataset para cada execução
+                LCItem reservasCopia = LeArquivo.lerReservas(caminhoEntrada);
+                
+                inicio = System.currentTimeMillis();
+                reservasCopia.heapsort();
+                tempos[i] = System.currentTimeMillis() - inicio;
+                
+                System.out.println("    T" + (i+1) + ": " + tempos[i] + " ms");
+                
+                // Usa a última execução para salvar
+                if (i == 4) {
+                    reservas = reservasCopia;
+                }
             }
+            
+            // Calcula a média
+            double media = 0;
+            for (long tempo : tempos) {
+                media += tempo;
+            }
+            media = media / 5.0;
+            
+            System.out.println("  - Média: " + String.format("%.2f", media) + " ms");
 
-            // 4. Salva o resultado
+            // 3. Salva o resultado
             EscreveArquivo.salvarReservas(reservas, caminhoSaida);
 
-            // 5. Salva estatísticas
+            // 4. Salva estatísticas (primeira linha cria o arquivo, demais adicionam)
+            boolean primeiraLinha = nomeDataset.equals("Reserva1000alea");
             EscreveArquivo.salvarEstatisticas(
                 "src/br/faesa/C3/dados/estatisticas.csv",
                 nomeDataset,
                 "HeapSort",
-                tempoOrdenacao,
-                reservas.getQuant()
+                tempos,
+                media,
+                reservas.getQuant(),
+                primeiraLinha
             );
 
             System.out.println();
