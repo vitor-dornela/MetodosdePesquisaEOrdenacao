@@ -1,9 +1,9 @@
 package br.faesa.C3;
-import br.faesa.C3.algoritmos.entidades.LCInteiro;
 import br.faesa.C3.algoritmos.ordenacao.HeapSort;
 import br.faesa.C3.algoritmos.ordenacao.QuickSort;
 import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVL;
 import br.faesa.C3.algoritmos.pesquisa.AVL.NoAVL;
+import br.faesa.C3.entidades.LCInteiro;
 
 public class Teste {
 

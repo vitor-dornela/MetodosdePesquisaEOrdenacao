@@ -1,4 +1,4 @@
-package br.faesa.C3.algoritmos.entidades;
+package br.faesa.C3.entidades;
 
 import br.faesa.C3.algoritmos.ordenacao.*;
 

@@ -1,7 +1,7 @@
 package br.faesa.C3;
-import br.faesa.C3.algoritmos.entidades.*;
-import br.faesa.C3.algoritmos.helper.EscreveArquivo;
-import br.faesa.C3.algoritmos.helper.LeArquivo;
+import br.faesa.C3.entidades.*;
+import br.faesa.C3.helper.EscreveArquivo;
+import br.faesa.C3.helper.LeArquivo;
 
 import java.io.IOException;
 

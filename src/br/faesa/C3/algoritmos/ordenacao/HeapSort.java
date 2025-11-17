@@ -1,6 +1,7 @@
 package br.faesa.C3.algoritmos.ordenacao;
 
-import br.faesa.C3.algoritmos.entidades.Item;
+import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Ordenavel;
 
 public class HeapSort {
     

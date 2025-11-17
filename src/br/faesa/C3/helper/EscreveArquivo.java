@@ -1,11 +1,11 @@
-package br.faesa.C3.algoritmos.helper;
+package br.faesa.C3.helper;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import br.faesa.C3.algoritmos.entidades.Item;
-import br.faesa.C3.algoritmos.entidades.LCItem;
+import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.LCItem;
 
 /**
  * Classe utilitária para escrever dados ordenados em arquivo.

@@ -1,6 +1,5 @@
-package br.faesa.C3.algoritmos.entidades;
-
-import br.faesa.C3.algoritmos.ordenacao.Ordenavel;
+package br.faesa.C3.entidades;
+import br.faesa.C3.algoritmos.ordenacao.*;
 
 public class LCInteiro implements Ordenavel {
     private Integer[] lista;
@@ -188,27 +187,27 @@ public class LCInteiro implements Ordenavel {
 
     // --- QUICKSORT ---
     public void quicksort() {
-        br.faesa.C3.algoritmos.ordenacao.QuickSort.sort(this.lista, this.quant);
+        QuickSort.sort(this.lista, this.quant);
     }
 
     // --- QUICKSORT WITH INSERTION ---
     public void quicksortComInsercao() {
-        br.faesa.C3.algoritmos.ordenacao.QuickSortComInsercao.sort(this.lista, this.quant);
+        QuickSortComInsercao.sort(this.lista, this.quant);
     }
 
     // --- QUICKSORT WITH INSERTION (EXACTLY 20) ---
     public void quicksortComInsercaoExato() {
-        br.faesa.C3.algoritmos.ordenacao.QuickSortComInsercaoExato.sort(this.lista, this.quant);
+        QuickSortComInsercaoExato.sort(this.lista, this.quant);
     }
 
     // --- HEAPSORT ---
     public void heapsort() {
-        br.faesa.C3.algoritmos.ordenacao.HeapSort.sort(this.lista, this.quant);
+        HeapSort.sort(this.lista, this.quant);
     }
 
     // --- INSERTION SORT ---
     public void insertionSort() {
-        br.faesa.C3.algoritmos.ordenacao.InsertionSort.sort(this.lista, this.quant);
+        InsertionSort.sort(this.lista, this.quant);
     }
 
 }

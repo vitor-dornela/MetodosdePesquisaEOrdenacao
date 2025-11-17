@@ -1,4 +1,4 @@
-package br.faesa.C3.algoritmos.ordenacao;
+package br.faesa.C3.entidades;
 
 /**
  * Interface para estruturas de dados que podem ser ordenadas.

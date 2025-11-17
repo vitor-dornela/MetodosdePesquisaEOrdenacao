@@ -1,4 +1,4 @@
-package br.faesa.C3.algoritmos.helper;
+package br.faesa.C3.helper;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.faesa.C3.algoritmos.entidades.Item;
-import br.faesa.C3.algoritmos.entidades.LCItem;
+import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.LCItem;
 
 /**
  * Classe para leitura de arquivos do sistema de arquivos.

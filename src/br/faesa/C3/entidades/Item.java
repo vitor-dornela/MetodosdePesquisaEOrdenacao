@@ -1,4 +1,4 @@
-package br.faesa.C3.algoritmos.entidades;
+package br.faesa.C3.entidades;
 
 public class Item implements Comparable<Item> {
     private String chave;      // Ex: R000001
