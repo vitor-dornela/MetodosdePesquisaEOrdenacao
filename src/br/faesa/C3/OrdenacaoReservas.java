@@ -1,3 +1,4 @@
+package br.faesa.C3;
 import br.faesa.C3.algoritmos.entidades.*;
 import br.faesa.C3.algoritmos.helper.EscreveArquivo;
 import br.faesa.C3.algoritmos.helper.LeArquivo;
@@ -54,7 +55,7 @@ public class OrdenacaoReservas {
      * @param primeiraLinha Se true, escreve o cabeçalho do CSV
      */
     private static void processarDataset(String nomeDataset, String algoritmo, boolean primeiraLinha) {
-        String caminhoEntrada = "/br/faesa/C3/dados/brutos/" + nomeDataset + ".txt";
+        String caminhoEntrada = "data/raw/" + nomeDataset + ".txt";
         String prefixo;
         if (algoritmo.equals("HeapSort")) {
             prefixo = "heap";
@@ -65,7 +66,7 @@ public class OrdenacaoReservas {
         } else {
             prefixo = "QuickIns20";
         }
-        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + prefixo + nomeDataset + ".txt";
+        String caminhoSaida = "data/sorted/" + prefixo + nomeDataset + ".txt";
 
         try {
             System.out.print("  " + algoritmo + ": ");
@@ -102,7 +103,7 @@ public class OrdenacaoReservas {
 
             // Salva estatísticas
             EscreveArquivo.salvarEstatisticas(
-                "src/br/faesa/C3/dados/estatisticas.csv",
+                "data/estatisticas.csv",
                 nomeDataset,
                 algoritmo,
                 media,

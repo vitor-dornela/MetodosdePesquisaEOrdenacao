@@ -1,8 +1,7 @@
 package br.faesa.C3.algoritmos.helper;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,30 +10,18 @@ import br.faesa.C3.algoritmos.entidades.Item;
 import br.faesa.C3.algoritmos.entidades.LCItem;
 
 /**
- * Classe para leitura de arquivos do classpath.
+ * Classe para leitura de arquivos do sistema de arquivos.
  */
 public class LeArquivo {
 
     /**
-     * Abre um arquivo dentro do classpath.
-     */
-    public static BufferedReader abrirRecurso(String caminho) {
-        InputStream input = LeArquivo.class.getResourceAsStream(caminho);
-
-        if (input == null) {
-            throw new RuntimeException("Arquivo não encontrado: " + caminho);
-        }
-
-        return new BufferedReader(new InputStreamReader(input));
-    }
-
-    /**
-     * Lê todas as linhas e retorna uma lista.
+     * Lê todas as linhas de um arquivo e retorna uma lista.
+     * @param caminho Caminho do arquivo no sistema de arquivos
      */
     public static List<String> lerLinhas(String caminho) {
         List<String> linhas = new ArrayList<>();
 
-        try (BufferedReader br = abrirRecurso(caminho)) {
+        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
             String linha;
 
             while ((linha = br.readLine()) != null) {
@@ -42,7 +29,7 @@ public class LeArquivo {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao ler arquivo: " + caminho, e);
         }
 
         return linhas;
@@ -50,7 +37,7 @@ public class LeArquivo {
 
     /**
      * Lê um arquivo de reservas e retorna uma LCItem preenchida.
-     * @param caminhoArquivo Caminho do arquivo no classpath (ex: "/br/faesa/C3/dados/Reserva1000alea.txt")
+     * @param caminhoArquivo Caminho do arquivo (ex: "data/raw/Reserva1000alea.txt")
      * @return LCItem com todas as reservas carregadas
      */
     public static LCItem lerReservas(String caminhoArquivo) {

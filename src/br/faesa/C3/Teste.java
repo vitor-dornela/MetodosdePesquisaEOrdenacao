@@ -1,3 +1,4 @@
+package br.faesa.C3;
 import br.faesa.C3.algoritmos.entidades.LCInteiro;
 import br.faesa.C3.algoritmos.ordenacao.HeapSort;
 import br.faesa.C3.algoritmos.ordenacao.QuickSort;
