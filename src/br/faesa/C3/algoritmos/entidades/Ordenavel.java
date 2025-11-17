@@ -6,5 +6,7 @@ package br.faesa.C3.algoritmos.entidades;
 public interface Ordenavel {
     void heapsort();
     void quicksort();
+    void quicksortComInsercao();
+    void quicksortComInsercaoExato();
     boolean eVazia();
 }

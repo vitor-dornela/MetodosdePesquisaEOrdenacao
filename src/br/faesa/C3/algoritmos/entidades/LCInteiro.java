@@ -234,6 +234,126 @@ public class LCInteiro implements Ordenavel {
         }
     }
 
+    // --- QUICKSORT WITH INSERTION ---
+    public void quicksortComInsercao() {
+        quicksortComInsercao(0, this.quant - 1);
+    }
+
+    private void quicksortComInsercao(int esq, int dir) {
+        // Se a partição tem 20 ou menos elementos, usa InsertionSort
+        if (dir - esq <= 20) {
+            insertionSortRange(esq, dir);
+            return;
+        }
+
+        int pivo, i = esq, j = dir, temp;
+
+        // 1. Escolhe o pivô (elemento do meio)
+        pivo = this.lista[(i + j) / 2];
+
+        // 2. Particiona o array
+        do {
+            // Encontra um elemento à esquerda que é >= pivô
+            while (this.lista[i] < pivo) {
+                i++;
+            }
+
+            // Encontra um elemento à direita que é <= pivô
+            while (this.lista[j] > pivo) {
+                j--;
+            }
+
+            // 3. Se os ponteiros não se cruzaram, troca os elementos
+            if (i <= j) {
+                temp = this.lista[i];
+                this.lista[i] = this.lista[j];
+                this.lista[j] = temp;
+                i++;
+                j--;
+            }
+        } while (i <= j);
+
+        // 4. Chama a si mesmo recursivamente para as duas sub-listas
+        if (esq < j) {
+            quicksortComInsercao(esq, j);
+        }
+        if (i < dir) {
+            quicksortComInsercao(i, dir);
+        }
+    }
+
+    // --- QUICKSORT WITH INSERTION (EXACTLY 20) ---
+    public void quicksortComInsercaoExato() {
+        quicksortComInsercaoExato(0, this.quant - 1);
+    }
+
+    private void quicksortComInsercaoExato(int esq, int dir) {
+        // Se a partição tem EXATAMENTE 20 elementos, usa InsertionSort
+        if (dir - esq == 20) {
+            insertionSortRange(esq, dir);
+            return;
+        }
+
+        // Se a partição tem menos de 2 elementos, já está ordenada
+        if (esq >= dir) {
+            return;
+        }
+
+        int pivo, i = esq, j = dir, temp;
+
+        // 1. Escolhe o pivô (elemento do meio)
+        pivo = this.lista[(i + j) / 2];
+
+        // 2. Particiona o array
+        do {
+            // Encontra um elemento à esquerda que é >= pivô
+            while (this.lista[i] < pivo) {
+                i++;
+            }
+
+            // Encontra um elemento à direita que é <= pivô
+            while (this.lista[j] > pivo) {
+                j--;
+            }
+
+            // 3. Se os ponteiros não se cruzaram, troca os elementos
+            if (i <= j) {
+                temp = this.lista[i];
+                this.lista[i] = this.lista[j];
+                this.lista[j] = temp;
+                i++;
+                j--;
+            }
+        } while (i <= j);
+
+        // 4. Chama a si mesmo recursivamente para as duas sub-listas
+        if (esq < j) {
+            quicksortComInsercaoExato(esq, j);
+        }
+        if (i < dir) {
+            quicksortComInsercaoExato(i, dir);
+        }
+    }
+
+    /**
+     * InsertionSort para um intervalo específico do array.
+     */
+    private void insertionSortRange(int inicio, int fim) {
+        for (int i = inicio + 1; i <= fim; i++) {
+            int temp = this.lista[i];
+            int j = i - 1;
+
+            // Desloca os elementos maiores para a direita
+            while (j >= inicio && this.lista[j] > temp) {
+                this.lista[j + 1] = this.lista[j];
+                j--;
+            }
+
+            // Insere o elemento na posição correta
+            this.lista[j + 1] = temp;
+        }
+    }
+
     // --- HEAPSORT ---
     public void heapsort(){
         int dir = quant-1, esq = (dir-1)/2, temp;
@@ -270,6 +390,28 @@ public class LCInteiro implements Ordenavel {
         this.lista[i] = raiz;
     }
 
+
+    public void insertionSort() {
+        int i, j, temp; 
+
+        // Começa do segundo elemento (índice 1) 
+        for (i = 1; i < this.quant; i++) {
+            
+            // 1. Armazena o elemento atual que será inserido
+            temp = this.lista[i]; 
+            j = i - 1; 
+
+            // 2. Desloca os elementos maiores para a direita
+            // Continua enquanto j >= 0 E o elemento em lista[j] for maior que temp
+            while ((j >= 0) && (this.lista[j] > temp)) { 
+                this.lista[j + 1] = this.lista[j]; // Move o elemento para a direita 
+                j--; 
+            }
+            
+            // 3. Insere o elemento 'temp' na sua posição correta
+            this.lista[j + 1] = temp; 
+        }
+    }
 
 
 

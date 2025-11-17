@@ -3,24 +3,43 @@ import br.faesa.C3.algoritmos.entidades.*;
 import java.io.IOException;
 
 /**
- * Exemplo de uso: Carregar datasets, ordenar com HeapSort e salvar resultados.
+ * Exemplo de uso: Carregar datasets, ordenar com HeapSort e QuickSort e salvar resultados.
  */
 public class OrdenacaoReservas {
 
     public static void main(String[] args) {
-        // Array com todos os datasets disponíveis
-        String[] datasets = {
-            "Reserva1000alea", "Reserva1000ord", "Reserva1000inv",
-            "Reserva5000alea", "Reserva5000ord", "Reserva5000inv",
-            "Reserva10000alea", "Reserva10000ord", "Reserva10000inv",
-            "Reserva50000alea", "Reserva50000ord", "Reserva50000inv"
-        };
+        // Lista com todos os datasets disponíveis
+        LCItem datasets = new LCItem(12);
+        datasets.insereFinal(new Item(0, "Reserva1000alea"));
+        datasets.insereFinal(new Item(0, "Reserva1000ord"));
+        datasets.insereFinal(new Item(0, "Reserva1000inv"));
+        datasets.insereFinal(new Item(0, "Reserva5000alea"));
+        datasets.insereFinal(new Item(0, "Reserva5000ord"));
+        datasets.insereFinal(new Item(0, "Reserva5000inv"));
+        datasets.insereFinal(new Item(0, "Reserva10000alea"));
+        datasets.insereFinal(new Item(0, "Reserva10000ord"));
+        datasets.insereFinal(new Item(0, "Reserva10000inv"));
+        datasets.insereFinal(new Item(0, "Reserva50000alea"));
+        datasets.insereFinal(new Item(0, "Reserva50000ord"));
+        datasets.insereFinal(new Item(0, "Reserva50000inv"));
 
-        System.out.println("=== ORDENAÇÃO DE RESERVAS COM HEAPSORT ===\n");
+        // Lista com todos os algoritmos
+        LCItem algoritmos = new LCItem(4);
+        algoritmos.insereFinal(new Item(0, "HeapSort"));
+        algoritmos.insereFinal(new Item(0, "QuickSort"));
+        algoritmos.insereFinal(new Item(0, "QuickSortInsertion"));
+        algoritmos.insereFinal(new Item(0, "QuickSortInsertionExato"));
 
-        // Processa cada dataset
-        for (String nomeDataset : datasets) {
-            processarDataset(nomeDataset);
+        // Processa cada dataset com todos os algoritmos
+        for (int i = 0; i < datasets.getQuant(); i++) {
+            String nomeDataset = datasets.getItem(i).getNome();
+            System.out.println("\n=== PROCESSANDO: " + nomeDataset + " ===\n");
+            
+            for (int j = 0; j < algoritmos.getQuant(); j++) {
+                String algoritmo = algoritmos.getItem(j).getNome();
+                boolean primeiraLinha = (i == 0 && j == 0); // Só a primeira linha do primeiro dataset
+                processarDataset(nomeDataset, algoritmo, primeiraLinha);
+            }
         }
 
         System.out.println("\n=== PROCESSAMENTO CONCLUÍDO ===");
@@ -28,67 +47,66 @@ public class OrdenacaoReservas {
 
     /**
      * Carrega, ordena e salva um dataset específico.
+     * @param nomeDataset Nome do dataset
+     * @param algoritmo Nome do algoritmo ("HeapSort", "QuickSort", "QuickSortInsertion" ou "QuickSortInsertionExato")
+     * @param primeiraLinha Se true, escreve o cabeçalho do CSV
      */
-    private static void processarDataset(String nomeDataset) {
+    private static void processarDataset(String nomeDataset, String algoritmo, boolean primeiraLinha) {
         String caminhoEntrada = "/br/faesa/C3/dados/brutos/" + nomeDataset + ".txt";
-        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + "heap" + nomeDataset + ".txt";
+        String prefixo;
+        if (algoritmo.equals("HeapSort")) {
+            prefixo = "heap";
+        } else if (algoritmo.equals("QuickSort")) {
+            prefixo = "quick";
+        } else if (algoritmo.equals("QuickSortInsertion")) {
+            prefixo = "QuickIns";
+        } else {
+            prefixo = "QuickIns20";
+        }
+        String caminhoSaida = "src/br/faesa/C3/dados/ordenados/" + prefixo + nomeDataset + ".txt";
 
         try {
-            System.out.println("Processando: " + nomeDataset);
+            System.out.print("  " + algoritmo + ": ");
 
-            // 1. Carrega o dataset
+            // Marca o tempo inicial
             long inicio = System.currentTimeMillis();
-            LCItem reservas = LeArquivo.lerReservas(caminhoEntrada);
-            long tempoCarregamento = System.currentTimeMillis() - inicio;
-
-            System.out.println("  - Carregadas " + reservas.getQuant() + " reservas em " + 
-                               tempoCarregamento + " ms");
-
-            // 2. Ordena usando HeapSort 5 vezes e calcula a média
-            long[] tempos = new long[5];
-            System.out.println("  - Executando HeapSort 5 vezes:");
             
+            // Executa 5 vezes
+            LCItem reservas = null;
             for (int i = 0; i < 5; i++) {
-                // Recarrega o dataset para cada execução
-                LCItem reservasCopia = LeArquivo.lerReservas(caminhoEntrada);
+                // Carrega o dataset
+                reservas = LeArquivo.lerReservas(caminhoEntrada);
                 
-                inicio = System.currentTimeMillis();
-                reservasCopia.heapsort();
-                tempos[i] = System.currentTimeMillis() - inicio;
-                
-                System.out.println("    T" + (i+1) + ": " + tempos[i] + " ms");
-                
-                // Usa a última execução para salvar
-                if (i == 4) {
-                    reservas = reservasCopia;
+                // Chama o método apropriado
+                if (algoritmo.equals("HeapSort")) {
+                    reservas.heapsort();
+                } else if (algoritmo.equals("QuickSort")) {
+                    reservas.quicksort();
+                } else if (algoritmo.equals("QuickSortInsertion")) {
+                    reservas.quicksortComInsercao();
+                } else {
+                    reservas.quicksortComInsercaoExato();
                 }
             }
             
-            // Calcula a média
-            double media = 0;
-            for (long tempo : tempos) {
-                media += tempo;
-            }
-            media = media / 5.0;
+            // Marca o tempo final e calcula a média
+            long tempoTotal = System.currentTimeMillis() - inicio;
+            double media = tempoTotal / 5.0;
             
-            System.out.println("  - Média: " + String.format("%.2f", media) + " ms");
+            System.out.println(String.format("%.2f", media) + " ms");
 
-            // 3. Salva o resultado
+            // Salva o resultado
             EscreveArquivo.salvarReservas(reservas, caminhoSaida);
 
-            // 4. Salva estatísticas (primeira linha cria o arquivo, demais adicionam)
-            boolean primeiraLinha = nomeDataset.equals("Reserva1000alea");
+            // Salva estatísticas
             EscreveArquivo.salvarEstatisticas(
                 "src/br/faesa/C3/dados/estatisticas.csv",
                 nomeDataset,
-                "HeapSort",
-                tempos,
+                algoritmo,
                 media,
                 reservas.getQuant(),
                 primeiraLinha
             );
-
-            System.out.println();
 
         } catch (IOException e) {
             System.err.println("Erro ao processar " + nomeDataset + ": " + e.getMessage());
