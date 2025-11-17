@@ -1,5 +1,7 @@
 package br.faesa.C3.algoritmos.entidades;
 
+import br.faesa.C3.algoritmos.ordenacao.Ordenavel;
+
 public class LCInteiro implements Ordenavel {
     private Integer[] lista;
     private int quant;
@@ -14,40 +16,41 @@ public class LCInteiro implements Ordenavel {
         this.quant = 0;
     }
 
-    public int tamanho () {
+    public int tamanho() {
         return this.lista.length;
     }
 
     public int getQuant() {
         return this.quant;
     }
+
     /*
      * eVazia() => retorna verdadeiro se a lista estiver vazia e
-     *             falso caso contrário.
+     * falso caso contrário.
      */
     public boolean eVazia() {
-        if (this.quant==0) {
+        if (this.quant == 0) {
             return true;
         }
         return false;
     }
 
     public boolean eCheia() {
-        if (this.quant==this.lista.length) {
+        if (this.quant == this.lista.length) {
             return true;
         }
         return false;
     }
 
-    public Integer get (int pos) {
-        if (pos>=0 && pos<this.quant) {
+    public Integer get(int pos) {
+        if (pos >= 0 && pos < this.quant) {
             return this.lista[pos];
         }
         return null;
     }
 
-    public int pesquisa (int cod) {
-        for (int i = 0; i<quant; i++) {
+    public int pesquisa(int cod) {
+        for (int i = 0; i < quant; i++) {
             if (this.lista[i] == cod) {
                 return i;
             }
@@ -55,27 +58,27 @@ public class LCInteiro implements Ordenavel {
         return -1;
     }
 
-    public boolean insere (Integer item, int pos) {
-        if (pos<0 || pos>quant) {// posicao invalida
+    public boolean insere(Integer item, int pos) {
+        if (pos < 0 || pos > quant) {// posicao invalida
             return false;
         }
-        if (quant==this.lista.length) {
+        if (quant == this.lista.length) {
             aumenta();
         }
-        for (int i = quant; i> pos; i--) {
-            this.lista[i] = this.lista[i-1];
+        for (int i = quant; i > pos; i--) {
+            this.lista[i] = this.lista[i - 1];
         }
         this.lista[pos] = item;
         this.quant++;
         return true;
     }
 
-    public void insereInicio (Integer item) {
-        insere (item, 0);
+    public void insereInicio(Integer item) {
+        insere(item, 0);
     }
 
-    public void insereFinal (Integer item) {
-        if (quant==this.lista.length) {
+    public void insereFinal(Integer item) {
+        if (quant == this.lista.length) {
             aumenta();
         }
         this.lista[quant] = item;
@@ -84,50 +87,49 @@ public class LCInteiro implements Ordenavel {
 
     private void aumenta() {
         Integer[] novo;
-        novo = new Integer[lista.length+lista.length/2];
-        for (int i=0; i<this.quant; i++) {
+        novo = new Integer[lista.length + lista.length / 2];
+        for (int i = 0; i < this.quant; i++) {
             novo[i] = this.lista[i];
         }
         this.lista = novo;
     }
 
-    public Integer remove (int cod) {
+    public Integer remove(int cod) {
         Integer aux;
         int pos = this.pesquisa(cod);
-        if (pos==-1) {
+        if (pos == -1) {
             return null;
         }
         aux = this.lista[pos];
-        for (int i = pos; i<quant-1; i++) {
-            this.lista[i] = this.lista[i+1];
+        for (int i = pos; i < quant - 1; i++) {
+            this.lista[i] = this.lista[i + 1];
         }
-        this.lista[quant-1] = null;
+        this.lista[quant - 1] = null;
         this.quant--;
         return aux;
     }
 
-    public Integer removePos (int pos) {
+    public Integer removePos(int pos) {
         Integer aux;
-        if (pos<0 || pos>=quant) {
+        if (pos < 0 || pos >= quant) {
             return null;
         }
         aux = this.lista[pos];
-        for (int i = pos; i<quant-1; i++) {
-            this.lista[i] = this.lista[i+1];
+        for (int i = pos; i < quant - 1; i++) {
+            this.lista[i] = this.lista[i + 1];
         }
-        this.lista[quant-1] = null;
+        this.lista[quant - 1] = null;
         this.quant--;
         return aux;
     }
 
-    public String toString () {
+    public String toString() {
         String aux = "";
-        for (int i=0; i<this.quant; i++) {
-            aux += this.lista[i]+" | ";
+        for (int i = 0; i < this.quant; i++) {
+            aux += this.lista[i] + " | ";
         }
         return aux;
     }
-
 
     public LCInteiro concatena(LCInteiro outra) {
         // Cria uma nova lista com capacidade para todos os elementos
@@ -145,7 +147,6 @@ public class LCInteiro implements Ordenavel {
 
         return nova;
     }
-
 
     public boolean igual(LCInteiro outra) {
         if (outra == null) {
@@ -171,7 +172,6 @@ public class LCInteiro implements Ordenavel {
         return true;
     }
 
-
     public boolean estaContida(LCInteiro outra) {
         // Para cada elemento da lista objeto
         for (int i = 0; i < this.getQuant(); i++) {
@@ -187,234 +187,28 @@ public class LCInteiro implements Ordenavel {
     }
 
     // --- QUICKSORT ---
-    public void quicksort () {
-        // Chama o método recursivo 'ordena' para ordenar
-        // o array inteiro (da posição 0 até quant-1)
-        ordena (0, this.quant-1);
-    }
-
-    /**
-     * Método privado e recursivo que implementa a lógica
-     * "dividir para conquistar" do Quick Sort.
-     */
-    private void ordena (int esq, int dir) {
-        int pivo, i = esq, j = dir, temp;
-
-        // 1. Escolhe o pivô (elemento do meio)
-        pivo = this.lista[(i + j) / 2];
-
-        // 2. Particiona o array
-        do {
-            // Encontra um elemento à esquerda que é >= pivô
-            while (this.lista[i] < pivo) {
-                i++;
-            }
-
-            // Encontra um elemento à direita que é <= pivô
-            while (this.lista[j] > pivo) {
-                j--;
-            }
-
-            // 3. Se os ponteiros não se cruzaram, troca os elementos
-            if (i <= j) {
-                temp = this.lista[i];
-                this.lista[i] = this.lista[j];
-                this.lista[j] = temp;
-                i++;
-                j--;
-            }
-        } while (i <= j);
-
-        // 4. Chama a si mesmo recursivamente para as duas sub-listas
-        if (esq < j) {
-            ordena (esq, j);
-        }
-        if (i < dir) {
-            ordena (i, dir);
-        }
+    public void quicksort() {
+        br.faesa.C3.algoritmos.ordenacao.QuickSort.sort(this.lista, this.quant);
     }
 
     // --- QUICKSORT WITH INSERTION ---
     public void quicksortComInsercao() {
-        quicksortComInsercao(0, this.quant - 1);
-    }
-
-    private void quicksortComInsercao(int esq, int dir) {
-        // Se a partição tem 20 ou menos elementos, usa InsertionSort
-        if (dir - esq <= 20) {
-            insertionSortRange(esq, dir);
-            return;
-        }
-
-        int pivo, i = esq, j = dir, temp;
-
-        // 1. Escolhe o pivô (elemento do meio)
-        pivo = this.lista[(i + j) / 2];
-
-        // 2. Particiona o array
-        do {
-            // Encontra um elemento à esquerda que é >= pivô
-            while (this.lista[i] < pivo) {
-                i++;
-            }
-
-            // Encontra um elemento à direita que é <= pivô
-            while (this.lista[j] > pivo) {
-                j--;
-            }
-
-            // 3. Se os ponteiros não se cruzaram, troca os elementos
-            if (i <= j) {
-                temp = this.lista[i];
-                this.lista[i] = this.lista[j];
-                this.lista[j] = temp;
-                i++;
-                j--;
-            }
-        } while (i <= j);
-
-        // 4. Chama a si mesmo recursivamente para as duas sub-listas
-        if (esq < j) {
-            quicksortComInsercao(esq, j);
-        }
-        if (i < dir) {
-            quicksortComInsercao(i, dir);
-        }
+        br.faesa.C3.algoritmos.ordenacao.QuickSortComInsercao.sort(this.lista, this.quant);
     }
 
     // --- QUICKSORT WITH INSERTION (EXACTLY 20) ---
     public void quicksortComInsercaoExato() {
-        quicksortComInsercaoExato(0, this.quant - 1);
-    }
-
-    private void quicksortComInsercaoExato(int esq, int dir) {
-        // Se a partição tem EXATAMENTE 20 elementos, usa InsertionSort
-        if (dir - esq == 20) {
-            insertionSortRange(esq, dir);
-            return;
-        }
-
-        // Se a partição tem menos de 2 elementos, já está ordenada
-        if (esq >= dir) {
-            return;
-        }
-
-        int pivo, i = esq, j = dir, temp;
-
-        // 1. Escolhe o pivô (elemento do meio)
-        pivo = this.lista[(i + j) / 2];
-
-        // 2. Particiona o array
-        do {
-            // Encontra um elemento à esquerda que é >= pivô
-            while (this.lista[i] < pivo) {
-                i++;
-            }
-
-            // Encontra um elemento à direita que é <= pivô
-            while (this.lista[j] > pivo) {
-                j--;
-            }
-
-            // 3. Se os ponteiros não se cruzaram, troca os elementos
-            if (i <= j) {
-                temp = this.lista[i];
-                this.lista[i] = this.lista[j];
-                this.lista[j] = temp;
-                i++;
-                j--;
-            }
-        } while (i <= j);
-
-        // 4. Chama a si mesmo recursivamente para as duas sub-listas
-        if (esq < j) {
-            quicksortComInsercaoExato(esq, j);
-        }
-        if (i < dir) {
-            quicksortComInsercaoExato(i, dir);
-        }
-    }
-
-    /**
-     * InsertionSort para um intervalo específico do array.
-     */
-    private void insertionSortRange(int inicio, int fim) {
-        for (int i = inicio + 1; i <= fim; i++) {
-            int temp = this.lista[i];
-            int j = i - 1;
-
-            // Desloca os elementos maiores para a direita
-            while (j >= inicio && this.lista[j] > temp) {
-                this.lista[j + 1] = this.lista[j];
-                j--;
-            }
-
-            // Insere o elemento na posição correta
-            this.lista[j + 1] = temp;
-        }
+        br.faesa.C3.algoritmos.ordenacao.QuickSortComInsercaoExato.sort(this.lista, this.quant);
     }
 
     // --- HEAPSORT ---
-    public void heapsort(){
-        int dir = quant-1, esq = (dir-1)/2, temp;
-
-        while(esq >= 0) {
-            refazheap (esq, this.quant-1);
-            esq--;
-        } while (dir > 0) {
-            temp = this.lista[0];
-            this.lista [0] = this.lista[dir];
-            this.lista [dir] = temp;
-            dir--;
-            refazheap(0, dir);
-        }
+    public void heapsort() {
+        br.faesa.C3.algoritmos.ordenacao.HeapSort.sort(this.lista, this.quant);
     }
 
-    private void refazheap(int esq, int dir) {
-        int i = esq, mF = 2 *i+1;
-        int raiz = this.lista[i];
-        boolean heap = false;
-
-        while((mF <= dir) && (!heap)) {
-            if(mF < dir)
-                if(this.lista[mF] < this.lista[mF+1])
-                    mF++;
-            if(raiz < this.lista[mF]) {
-                this.lista[i] = this.lista[mF];
-                i = mF;
-                mF = 2*i+1;
-            } else
-                heap = true;
-
-        }
-        this.lista[i] = raiz;
-    }
-
-
+    // --- INSERTION SORT ---
     public void insertionSort() {
-        int i, j, temp; 
-
-        // Começa do segundo elemento (índice 1) 
-        for (i = 1; i < this.quant; i++) {
-            
-            // 1. Armazena o elemento atual que será inserido
-            temp = this.lista[i]; 
-            j = i - 1; 
-
-            // 2. Desloca os elementos maiores para a direita
-            // Continua enquanto j >= 0 E o elemento em lista[j] for maior que temp
-            while ((j >= 0) && (this.lista[j] > temp)) { 
-                this.lista[j + 1] = this.lista[j]; // Move o elemento para a direita 
-                j--; 
-            }
-            
-            // 3. Insere o elemento 'temp' na sua posição correta
-            this.lista[j + 1] = temp; 
-        }
+        br.faesa.C3.algoritmos.ordenacao.InsertionSort.sort(this.lista, this.quant);
     }
-
-
-
-
 
 }

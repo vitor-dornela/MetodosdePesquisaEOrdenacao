@@ -1,4 +1,4 @@
-package br.faesa.C3.algoritmos.entidades;
+package br.faesa.C3.algoritmos.helper;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.faesa.C3.algoritmos.entidades.Item;
+import br.faesa.C3.algoritmos.entidades.LCItem;
 
 /**
  * Classe para leitura de arquivos do classpath.

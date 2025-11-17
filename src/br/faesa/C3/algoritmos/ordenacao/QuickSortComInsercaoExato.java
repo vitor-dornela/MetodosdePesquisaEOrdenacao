@@ -2,25 +2,28 @@ package br.faesa.C3.algoritmos.ordenacao;
 
 import br.faesa.C3.algoritmos.entidades.Item;
 
-public class QuickSort {
-    
-    /**
-     * Método genérico para ordenar qualquer lista que implemente Ordenavel.
-     */
-    public static void sort(Ordenavel lista) {
-        if (lista != null && !lista.eVazia()) {
-            lista.quicksort();
-        }
-    }
+public class QuickSortComInsercaoExato {
 
     /**
-     * Ordena um array de Item usando QuickSort.
+     * Ordena um array de Item usando QuickSort com InsertionSort APENAS quando a partição
+     * tem exatamente 20 elementos.
      */
     public static void sort(Item[] array, int size) {
-        ordena(array, 0, size - 1);
+        quicksortComInsercaoExato(array, 0, size - 1);
     }
 
-    private static void ordena(Item[] array, int esq, int dir) {
+    private static void quicksortComInsercaoExato(Item[] array, int esq, int dir) {
+        // Se a partição tem EXATAMENTE 20 elementos, usa InsertionSort
+        if (dir - esq == 20) {
+            InsertionSort.sortRange(array, esq, dir);
+            return;
+        }
+
+        // Se a partição tem menos de 2 elementos, já está ordenada
+        if (esq >= dir) {
+            return;
+        }
+
         Item pivo, temp;
         int i = esq, j = dir;
 
@@ -51,21 +54,33 @@ public class QuickSort {
 
         // 4. Chama a si mesmo recursivamente para as duas sub-listas
         if (esq < j) {
-            ordena(array, esq, j);
+            quicksortComInsercaoExato(array, esq, j);
         }
         if (i < dir) {
-            ordena(array, i, dir);
+            quicksortComInsercaoExato(array, i, dir);
         }
     }
 
     /**
-     * Ordena um array de Integer usando QuickSort.
+     * Ordena um array de Integer usando QuickSort com InsertionSort APENAS quando a partição
+     * tem exatamente 20 elementos.
      */
     public static void sort(Integer[] array, int size) {
-        ordena(array, 0, size - 1);
+        quicksortComInsercaoExato(array, 0, size - 1);
     }
 
-    private static void ordena(Integer[] array, int esq, int dir) {
+    private static void quicksortComInsercaoExato(Integer[] array, int esq, int dir) {
+        // Se a partição tem EXATAMENTE 20 elementos, usa InsertionSort
+        if (dir - esq == 20) {
+            InsertionSort.sortRange(array, esq, dir);
+            return;
+        }
+
+        // Se a partição tem menos de 2 elementos, já está ordenada
+        if (esq >= dir) {
+            return;
+        }
+
         int pivo, temp;
         int i = esq, j = dir;
 
@@ -96,10 +111,10 @@ public class QuickSort {
 
         // 4. Chama a si mesmo recursivamente para as duas sub-listas
         if (esq < j) {
-            ordena(array, esq, j);
+            quicksortComInsercaoExato(array, esq, j);
         }
         if (i < dir) {
-            ordena(array, i, dir);
+            quicksortComInsercaoExato(array, i, dir);
         }
     }
 }

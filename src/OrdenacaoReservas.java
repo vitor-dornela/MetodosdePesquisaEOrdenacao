@@ -1,4 +1,6 @@
 import br.faesa.C3.algoritmos.entidades.*;
+import br.faesa.C3.algoritmos.helper.EscreveArquivo;
+import br.faesa.C3.algoritmos.helper.LeArquivo;
 
 import java.io.IOException;
 

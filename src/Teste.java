@@ -4,7 +4,7 @@ import br.faesa.C3.algoritmos.ordenacao.QuickSort;
 import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVL;
 import br.faesa.C3.algoritmos.pesquisa.AVL.NoAVL;
 
-public class Main {
+public class Teste {
 
     public static void main(String[] args) {
 
