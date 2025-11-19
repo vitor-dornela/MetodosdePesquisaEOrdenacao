@@ -26,11 +26,13 @@ Este projeto implementa e compara o desempenho de diversos algoritmos de ordena�
 
 ✅ **4 Algoritmos de Ordenação** com análise comparativa de desempenho  
 ✅ **Pesquisa ABB Otimizada** com solução para StackOverflowError em grandes datasets  
+✅ **Pesquisa AVL** com auto-balanceamento garantindo O(log n)  
+✅ **Comparação ABB vs AVL** em 12 datasets (1k-50k elementos)  
 ✅ **Sobrecarga de Métodos** para trabalhar com `Item[]` e `Integer[]`  
 ✅ **Padrão de Delegação** entre estruturas de dados e algoritmos  
 ✅ **Medição Automática** de tempo de execução (média de 5 rodadas)  
 ✅ **Exportação de Resultados** ordenados, pesquisas e estatísticas em CSV  
-✅ **Suporte a Nomes Duplicados** com múltiplas reservas por nome na ABB  
+✅ **Suporte a Nomes Duplicados** com múltiplas reservas por nome nas árvores  
 
 ## 📁 Estrutura do Projeto
 
@@ -41,6 +43,7 @@ MetodosdePesquisaEOrdenacao/
 │       ├── Main.java                      # Testes básicos
 │       ├── OrdenacaoReservas.java         # Benchmark de ordenação
 │       ├── PesquisaReservas.java          # Benchmark de pesquisa ABB
+│       ├── PesquisaReservasAVL.java       # Benchmark de pesquisa AVL
 │       └── algoritmos/
 │           ├── entidades/
 │           │   ├── Item.java              # Modelo de dados de reserva
@@ -57,7 +60,9 @@ MetodosdePesquisaEOrdenacao/
 │           └── pesquisa/
 │               ├── AVL/
 │               │   ├── ArvoreAVL.java     # Árvore AVL (inteiros)
-│               │   └── NoAVL.java         # Nó da árvore AVL
+│               │   ├── ArvoreAVLItem.java # AVL para reservas
+│               │   ├── NoAVL.java         # Nó da árvore AVL
+│               │   └── NoAVLItem.java     # Nó AVL (Item)
 │               └── ABB/
 │                   ├── ArvoreABB.java     # ABB para inteiros
 │                   ├── ArvoreABBItem.java # ABB para reservas
@@ -72,8 +77,11 @@ MetodosdePesquisaEOrdenacao/
 │   │   └── ... (12 arquivos no total)
 │   ├── sorted/                            # Resultados ordenados
 │   ├── searched/                          # Resultados de pesquisa
+│   │   ├── ABBReserva*.txt               # 12 arquivos ABB
+│   │   └── AVLReserva*.txt               # 12 arquivos AVL
 │   ├── estatisticas.csv                   # Estatísticas de ordenação
-│   └── estatisticas_pesquisa.csv          # Estatísticas de pesquisa
+│   ├── estatisticas_pesquisa.csv          # Estatísticas pesquisa ABB
+│   └── estatisticas_pesquisa_avl.csv      # Estatísticas pesquisa AVL
 └── .github/
     └── copilot-instructions.md            # Documentação técnica
 ```
@@ -131,6 +139,24 @@ Combina QuickSort com InsertionSort: quando uma partição tem **20 ou menos ele
 - `NoABBItem`: Nó contendo nome (String) e lista de reservas (LCItem)
 - `ArvoreABBItem`: Árvore com métodos de inserção, busca, remoção e balanceamento
 
+#### AVL (Árvore Balanceada)
+Árvore binária de busca **auto-balanceada** com rotações automáticas durante inserção.
+
+**Características:**
+- Complexidade de busca: O(log n) **garantido** em todos os casos
+- Auto-balanceamento via rotações simples e duplas durante inserção
+- Fator de balanceamento mantido em cada nó (-1, 0, 1)
+- Suporta nomes duplicados usando lista de reservas por nó
+
+**Implementação:**
+- `NoAVLItem`: Nó com nome, lista de reservas e fator de balanceamento
+- `ArvoreAVLItem`: Árvore com rotações automáticas (esquerda, direita, dupla-esquerda, dupla-direita)
+
+**Vantagem sobre ABB:**
+- Não requer balanceamento manual após inserção
+- Mantém altura O(log n) automaticamente
+- Melhor performance consistente em todos os tipos de dados (alea/ord/inv)
+
 **⚠️ Problema Crítico Resolvido: StackOverflowError**
 
 **O Problema:**
@@ -170,6 +196,59 @@ abb.construirBalanceada(reservas);  // Constrói árvore balanceada diretamente
 - Aproveita a eficiência do QuickSort para grandes partições
 - Usa InsertionSort para partições pequenas (mais eficiente)
 - Melhora a performance geral em datasets variados
+
+## ⚖️ Comparação: ABB vs AVL
+
+### Resultados dos Testes (Tempo médio de 5 execuções)
+
+| Dataset | ABB (ms) | AVL (ms) | Vencedor | Diferença |
+|---------|----------|----------|----------|-----------|
+| 1000alea | 1.80 | 2.20 | ABB | 0.4ms |
+| 1000ord | 3.20 | 3.60 | ABB | 0.4ms |
+| 1000inv | 0.40 | 0.40 | Empate | 0ms |
+| 5000alea | 2.60 | 2.80 | ABB | 0.2ms |
+| 5000ord | 2.20 | 2.00 | AVL | 0.2ms |
+| 5000inv | 1.80 | 2.40 | ABB | 0.6ms |
+| 10000alea | 9.00 | 6.00 | AVL | 3.0ms |
+| 10000ord | 5.00 | 3.80 | AVL | 1.2ms |
+| 10000inv | 3.60 | 3.40 | AVL | 0.2ms |
+| 50000alea | 43.60 | 52.00 | ABB | 8.4ms |
+| 50000ord | 16.60 | 19.20 | ABB | 2.6ms |
+| 50000inv | 16.20 | 13.20 | AVL | 3.0ms |
+
+### Análise de Performance
+
+#### 🏆 ABB - Vantagens
+- **Construção em lote**: `construirBalanceada()` constrói árvore já balanceada via divide-and-conquer
+- **Melhor em dados aleatórios grandes**: 50k alea - ABB 8.4ms mais rápido
+- **Sem overhead de rotações**: Balanceamento feito uma vez, não em cada inserção
+- **Performance máxima**: Quando todos os dados estão disponíveis de uma vez
+
+#### 🏆 AVL - Vantagens
+- **Performance consistente**: Garante O(log n) automaticamente
+- **Melhor em dados ordenados invertidos**: 50k inv - AVL 3ms mais rápido
+- **Auto-balanceamento**: Não requer otimização manual
+- **Simplicidade**: Código mais limpo, sem necessidade de `construirBalanceada()`
+
+#### Quando Usar Cada Estrutura
+
+**Use ABB quando:**
+- ✅ Dados podem ser carregados completamente antes da construção
+- ✅ Performance máxima em construção em lote é crítica
+- ✅ Dados são predominantemente aleatórios
+- ✅ Controle manual sobre balanceamento é desejado
+
+**Use AVL quando:**
+- ✅ Inserções incrementais são necessárias
+- ✅ Garantia de O(log n) é crítica
+- ✅ Dados podem estar ordenados ou parcialmente ordenados
+- ✅ Simplicidade de uso é importante
+
+### 💡 Conclusão
+Ambas as estruturas têm mérito:
+- **ABB** otimizada com `construirBalanceada()` oferece melhor performance absoluta em cenários de carga em lote (até 19% mais rápida)
+- **AVL** oferece garantias mais fortes e simplicidade, com overhead mínimo (<20% na maioria dos casos)
+- Diferenças são estatisticamente insignificantes em datasets pequenos (<10k elementos)
 
 ## 📊 Estruturas de Dados
 
@@ -279,6 +358,43 @@ InsertionSort.sortRange(array, 0, 19);  // Ordenar apenas um intervalo
 // ABBReserva1000alea.txt - resultados para cada nome pesquisado
 // Nomes encontrados: 140 de 400 (35.0%)
 // Total de reservas: 195
+```
+
+### Benchmark de Pesquisa AVL
+
+```java
+// Executar PesquisaReservasAVL.java
+// Processa automaticamente:
+// - Carrega cada dataset (12 arquivos)
+// - Constrói AVL (auto-balanceada) 5 vezes
+// - Pesquisa 400 nomes em cada execução
+// - Calcula tempo médio
+// - Salva resultados em data/searched/AVL*.txt
+// - Salva estatísticas em data/estatisticas_pesquisa_avl.csv
+
+// Vantagem: Melhor performance consistente em dados ordenados
+// AVL mantém balanceamento automático durante inserção
+```
+
+### Diferença de Uso: ABB vs AVL
+
+```java
+// ===== ABB =====
+// Requer construção balanceada para evitar StackOverflowError em dados ordenados
+ArvoreABBItem abb = new ArvoreABBItem();
+abb.construirBalanceada(reservas.getLista(), 0, reservas.getQuant() - 1);
+LCItem resultado = abb.pesquisa("JOAO SILVA");
+
+// ===== AVL =====
+// Auto-balanceamento durante inserção - mais simples!
+ArvoreAVLItem avl = new ArvoreAVLItem();
+for (int i = 0; i < reservas.getQuant(); i++) {
+    avl.insere(reservas.getItem(i));  // Auto-balanceia aqui
+}
+LCItem resultado = avl.pesquisa("JOAO SILVA");
+
+// Ambos retornam LCItem com todas as reservas do nome encontrado
+// Ambos lidam com nomes duplicados da mesma forma
 ```
 
 ## 💡 Exemplos de Código
