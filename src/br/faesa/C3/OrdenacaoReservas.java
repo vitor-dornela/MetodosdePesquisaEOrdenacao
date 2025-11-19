@@ -1,4 +1,5 @@
 package br.faesa.C3;
+
 import br.faesa.C3.entidades.*;
 import br.faesa.C3.helper.EscreveArquivo;
 import br.faesa.C3.helper.LeArquivo;
@@ -98,7 +99,7 @@ public class OrdenacaoReservas {
 
             // Salva estatísticas
             EscreveArquivo.salvarEstatisticas(
-                "data/estatisticas.csv",
+                "data/estatisticas_ordenacao.csv",
                 nomeDataset,
                 algoritmo,
                 media,

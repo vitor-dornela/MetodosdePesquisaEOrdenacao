@@ -42,8 +42,7 @@ MetodosdePesquisaEOrdenacao/
 │   └── br/faesa/C3/
 │       ├── Main.java                      # Testes básicos
 │       ├── OrdenacaoReservas.java         # Benchmark de ordenação
-│       ├── PesquisaReservas.java          # Benchmark de pesquisa ABB
-│       ├── PesquisaReservasAVL.java       # Benchmark de pesquisa AVL
+│       ├── PesquisaReservas.java          # Benchmark ABB vs AVL
 │       └── algoritmos/
 │           ├── entidades/
 │           │   ├── Item.java              # Modelo de dados de reserva
@@ -79,9 +78,8 @@ MetodosdePesquisaEOrdenacao/
 │   ├── searched/                          # Resultados de pesquisa
 │   │   ├── ABBReserva*.txt               # 12 arquivos ABB
 │   │   └── AVLReserva*.txt               # 12 arquivos AVL
-│   ├── estatisticas.csv                   # Estatísticas de ordenação
-│   ├── estatisticas_pesquisa.csv          # Estatísticas pesquisa ABB
-│   └── estatisticas_pesquisa_avl.csv      # Estatísticas pesquisa AVL
+│   ├── estatisticas_ordenacao.csv         # Estatísticas de ordenação
+│   └── estatisticas_pesquisa.csv          # Estatísticas de pesquisa (ABB + AVL)
 └── .github/
     └── copilot-instructions.md            # Documentação técnica
 ```
@@ -343,37 +341,25 @@ InsertionSort.sortRange(array, 0, 19);  // Ordenar apenas um intervalo
 // - Calcula médias e salva estatísticas
 ```
 
-### Benchmark de Pesquisa ABB
+### Benchmark de Pesquisa (ABB vs AVL)
 
 ```java
 // Executar PesquisaReservas.java
 // Processa automaticamente:
 // - Carrega cada dataset (12 arquivos)
-// - Constrói ABB balanceada 5 vezes
-// - Pesquisa 400 nomes em cada execução
-// - Calcula tempo médio
-// - Salva resultados de pesquisa e estatísticas
+// - Constrói AMBAS as estruturas: ABB balanceada E AVL auto-balanceada
+// - Pesquisa 400 nomes em cada estrutura
+// - Executa 5 vezes para calcular tempo médio
+// - Salva resultados em data/searched/ABB*.txt e AVL*.txt
+// - Compara performance entre as duas estruturas
+// - Salva estatísticas em data/estatisticas_pesquisa.csv
 
 // Exemplo de saída:
-// ABBReserva1000alea.txt - resultados para cada nome pesquisado
-// Nomes encontrados: 140 de 400 (35.0%)
-// Total de reservas: 195
-```
-
-### Benchmark de Pesquisa AVL
-
-```java
-// Executar PesquisaReservasAVL.java
-// Processa automaticamente:
-// - Carrega cada dataset (12 arquivos)
-// - Constrói AVL (auto-balanceada) 5 vezes
-// - Pesquisa 400 nomes em cada execução
-// - Calcula tempo médio
-// - Salva resultados em data/searched/AVL*.txt
-// - Salva estatísticas em data/estatisticas_pesquisa_avl.csv
-
-// Vantagem: Melhor performance consistente em dados ordenados
-// AVL mantém balanceamento automático durante inserção
+// Dataset: Reserva10000alea
+//   ABB: 6.60 ms
+//   AVL: 6.00 ms
+//   Nomes encontrados: 284 de 400 (71.0%)
+//   Total de reservas: 479
 ```
 
 ### Diferença de Uso: ABB vs AVL
@@ -483,15 +469,23 @@ java -cp src br.faesa.C3.OrdenacaoReservas
   ...
 ```
 
-### Arquivo de Estatísticas
+### Arquivos de Estatísticas
 
-O arquivo `data/estatisticas.csv` contém:
-
+**Ordenação** (`data/estatisticas_ordenacao.csv`):
 ```csv
 Dataset;Algoritmo;Elementos;Media(ms)
 Reserva1000alea;HeapSort;1000;12.40
 Reserva1000alea;QuickSort;1000;10.20
-Reserva1000alea;QuickSortInsertion;1000;9.80
+...
+```
+
+**Pesquisa** (`data/estatisticas_pesquisa.csv`):
+```csv
+Dataset;Algoritmo;Elementos;Media(ms)
+Reserva1000alea;ABB;1000;1.80
+Reserva1000alea;AVL;1000;2.20
+Reserva10000alea;ABB;10000;6.60
+Reserva10000alea;AVL;10000;6.00
 ...
 ```
 
@@ -544,7 +538,7 @@ javac -d out src/br/faesa/C3/**/*.java
 # Benchmark de ordenação
 java -cp out br.faesa.C3.OrdenacaoReservas
 
-# Benchmark de pesquisa (ABB)
+# Benchmark de pesquisa (ABB + AVL combinados)
 java -cp out br.faesa.C3.PesquisaReservas
 
 # Testes básicos

@@ -117,15 +117,16 @@ public class EscreveArquivo {
      * Salva os resultados de múltiplas pesquisas em arquivo.
      * 
      * @param caminhoArquivo Caminho do arquivo de saída
-     * @param nomesPesquisados Array com os nomes pesquisados
+     * @param nomesPesquisados LCItem com os nomes pesquisados
      * @param resultados Array com as listas de reservas encontradas (pode conter nulls)
      * @throws IOException Se houver erro ao escrever
      */
-    public static void salvarResultadosPesquisa(String caminhoArquivo, String[] nomesPesquisados, 
+    public static void salvarResultadosPesquisa(String caminhoArquivo, LCItem nomesPesquisados, 
             LCItem[] resultados) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            for (int i = 0; i < nomesPesquisados.length; i++) {
-                String resultado = formatarResultadoPesquisa(nomesPesquisados[i], resultados[i]);
+            for (int i = 0; i < nomesPesquisados.getQuant(); i++) {
+                String nome = nomesPesquisados.getItem(i).getNome();
+                String resultado = formatarResultadoPesquisa(nome, resultados[i]);
                 writer.write(resultado);
                 writer.newLine(); // Linha em branco entre pesquisas
             }

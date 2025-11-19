@@ -3,20 +3,23 @@ package br.faesa.C3;
 import java.io.IOException;
 
 import br.faesa.C3.algoritmos.pesquisa.ABB.ArvoreABBItem;
+import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVLItem;
+import br.faesa.C3.entidades.Item;
 import br.faesa.C3.entidades.LCItem;
 import br.faesa.C3.helper.EscreveArquivo;
 import br.faesa.C3.helper.LeArquivo;
 
 /**
- * Programa para realizar pesquisas de reservas usando Árvore Binária de Busca (ABB).
+ * Programa para realizar pesquisas de reservas usando ABB e AVL.
+ * Utiliza as estruturas de dados LCItem para armazenar datasets e resultados.
  * 
  * Para cada um dos 12 datasets de reservas:
  * 1. Carrega as reservas do arquivo
- * 2. Constrói uma ABB indexada por nome
- * 3. Balanceia a árvore para otimizar as buscas
- * 4. Pesquisa os 400 nomes do arquivo nome.txt
- * 5. Repete 5 vezes para calcular tempo médio
- * 6. Salva os resultados em data/searched/ABB*.txt
+ * 2. Constrói ABB (balanceada) e AVL (auto-balanceada)
+ * 3. Pesquisa os 400 nomes do arquivo nome.txt
+ * 4. Repete 5 vezes para calcular tempo médio
+ * 5. Salva os resultados em data/searched/
+ * 6. Compara performance entre ABB e AVL
  */
 public class PesquisaReservas {
 
@@ -25,22 +28,30 @@ public class PesquisaReservas {
     private static final String CAMINHO_ESTATISTICAS = "data/estatisticas_pesquisa.csv";
 
     public static void main(String[] args) {
-        // Datasets a processar
-        String[] datasets = {
-            "Reserva1000alea", "Reserva1000ord", "Reserva1000inv",
-            "Reserva5000alea", "Reserva5000ord", "Reserva5000inv",
-            "Reserva10000alea", "Reserva10000ord", "Reserva10000inv",
-            "Reserva50000alea", "Reserva50000ord", "Reserva50000inv"
-        };
+        // Datasets a processar (usando LCItem para consistência)
+        LCItem datasets = new LCItem(12);
+        datasets.insereFinal(new Item(0, "Reserva1000alea"));
+        datasets.insereFinal(new Item(0, "Reserva1000ord"));
+        datasets.insereFinal(new Item(0, "Reserva1000inv"));
+        datasets.insereFinal(new Item(0, "Reserva5000alea"));
+        datasets.insereFinal(new Item(0, "Reserva5000ord"));
+        datasets.insereFinal(new Item(0, "Reserva5000inv"));
+        datasets.insereFinal(new Item(0, "Reserva10000alea"));
+        datasets.insereFinal(new Item(0, "Reserva10000ord"));
+        datasets.insereFinal(new Item(0, "Reserva10000inv"));
+        datasets.insereFinal(new Item(0, "Reserva50000alea"));
+        datasets.insereFinal(new Item(0, "Reserva50000ord"));
+        datasets.insereFinal(new Item(0, "Reserva50000inv"));
 
-        // Carrega os nomes a pesquisar (uma única vez)
-        String[] nomesPesquisa = LeArquivo.lerNomes(CAMINHO_NOMES);
-        System.out.println("Total de nomes para pesquisa: " + nomesPesquisa.length);
+        // Carrega os nomes a pesquisar (uma única vez) usando LCItem
+        LCItem nomesPesquisa = LeArquivo.lerNomesComoLCItem(CAMINHO_NOMES);
+        System.out.println("Total de nomes para pesquisa: " + nomesPesquisa.getQuant());
 
         boolean primeiraLinha = true;
 
         // Processa cada dataset
-        for (String nomeDataset : datasets) {
+        for (int i = 0; i < datasets.getQuant(); i++) {
+            String nomeDataset = datasets.getItem(i).getNome();
             System.out.println("\n=== PROCESSANDO: " + nomeDataset + " ===");
 
             try {
@@ -58,73 +69,109 @@ public class PesquisaReservas {
     }
 
     /**
-     * Processa um dataset: constrói ABB, balanceia, pesquisa nomes e salva resultados.
+     * Processa um dataset: constrói ABB e AVL, pesquisa nomes e compara resultados.
      */
-    private static void processarDataset(String nomeDataset, String[] nomesPesquisa, 
+    private static void processarDataset(String nomeDataset, LCItem nomesPesquisa, 
             boolean primeiraLinha) throws IOException {
         
         String caminhoEntrada = "data/raw/" + nomeDataset + ".txt";
-        String caminhoSaida = "data/searched/ABB" + nomeDataset + ".txt";
+        String caminhoSaidaABB = "data/searched/ABB" + nomeDataset + ".txt";
+        String caminhoSaidaAVL = "data/searched/AVL" + nomeDataset + ".txt";
 
-        // Carrega as reservas
-        // Carrega o arquivo uma vez (fora do tempo)
+        // Carrega as reservas (fora do tempo)
         LCItem reservas = LeArquivo.lerReservas(caminhoEntrada);
         System.out.println("  Reservas carregadas: " + reservas.getQuant());
 
-        // Variáveis para armazenar resultados da última execução
-        LCItem[] resultadosPesquisa = null;
-        long tempoTotal = 0;
+        // ========== ABB ==========
+        LCItem[] resultadosPesquisaABB = null;
+        long tempoTotalABB = 0;
 
-        // Executa NUM_EXECUCOES vezes para calcular média
         for (int exec = 0; exec < NUM_EXECUCOES; exec++) {
             long inicio = System.currentTimeMillis();
 
-            // 4.1) Carrega em ABB e balanceia
-            // Nota: construirBalanceada() faz load+balance de forma otimizada
-            // para evitar StackOverflowError em dados ordenados (50k elementos)
+            // Constrói ABB balanceada usando lista de reservas
             ArvoreABBItem abb = new ArvoreABBItem();
             abb.construirBalanceada(reservas);
 
-            // 4.2) Realiza as pesquisas nos 400 nomes
-            resultadosPesquisa = new LCItem[nomesPesquisa.length];
-            for (int i = 0; i < nomesPesquisa.length; i++) {
-                resultadosPesquisa[i] = abb.pesquisa(nomesPesquisa[i]);
+            // Realiza as pesquisas usando LCItem de nomes
+            resultadosPesquisaABB = new LCItem[nomesPesquisa.getQuant()];
+            for (int i = 0; i < nomesPesquisa.getQuant(); i++) {
+                String nome = nomesPesquisa.getItem(i).getNome();
+                resultadosPesquisaABB[i] = abb.pesquisa(nome);
             }
 
             long fim = System.currentTimeMillis();
-            tempoTotal += (fim - inicio);
+            tempoTotalABB += (fim - inicio);
         }
-        // 4.3) Após rodar 5 vezes, termina de contar o tempo
 
-        // Calcula média
-        double media = tempoTotal / (double) NUM_EXECUCOES;
-        System.out.printf("  ABB: %.2f ms (média de %d execuções)\n", media, NUM_EXECUCOES);
+        double mediaABB = tempoTotalABB / (double) NUM_EXECUCOES;
+        System.out.printf("  ABB: %.2f ms\n", mediaABB);
 
-        // Salva os resultados da última execução
-        EscreveArquivo.salvarResultadosPesquisa(caminhoSaida, nomesPesquisa, resultadosPesquisa);
+        // Salva resultados ABB usando LCItem diretamente
+        EscreveArquivo.salvarResultadosPesquisa(caminhoSaidaABB, nomesPesquisa, resultadosPesquisaABB);
 
-        // Salva estatísticas
+        // ========== AVL ==========
+        LCItem[] resultadosPesquisaAVL = null;
+        long tempoTotalAVL = 0;
+
+        for (int exec = 0; exec < NUM_EXECUCOES; exec++) {
+            long inicio = System.currentTimeMillis();
+
+            // Constrói AVL (auto-balanceada) inserindo cada item da lista
+            ArvoreAVLItem avl = new ArvoreAVLItem();
+            for (int i = 0; i < reservas.getQuant(); i++) {
+                avl.insere(reservas.getItem(i));
+            }
+
+            // Realiza as pesquisas usando LCItem de nomes
+            resultadosPesquisaAVL = new LCItem[nomesPesquisa.getQuant()];
+            for (int i = 0; i < nomesPesquisa.getQuant(); i++) {
+                String nome = nomesPesquisa.getItem(i).getNome();
+                resultadosPesquisaAVL[i] = avl.pesquisa(nome);
+            }
+
+            long fim = System.currentTimeMillis();
+            tempoTotalAVL += (fim - inicio);
+        }
+
+        double mediaAVL = tempoTotalAVL / (double) NUM_EXECUCOES;
+        System.out.printf("  AVL: %.2f ms\n", mediaAVL);
+
+        // Salva resultados AVL usando LCItem diretamente
+        EscreveArquivo.salvarResultadosPesquisa(caminhoSaidaAVL, nomesPesquisa, resultadosPesquisaAVL);
+
+        // ========== Estatísticas ==========
+        // Salva ambas as estruturas no mesmo arquivo
         EscreveArquivo.salvarEstatisticas(
             CAMINHO_ESTATISTICAS,
             nomeDataset,
             "ABB",
-            media,
+            mediaABB,
             reservas.getQuant(),
             primeiraLinha
         );
+        
+        EscreveArquivo.salvarEstatisticas(
+            CAMINHO_ESTATISTICAS,
+            nomeDataset,
+            "AVL",
+            mediaAVL,
+            reservas.getQuant(),
+            false // Nunca primeira linha para AVL
+        );
 
-        // Conta quantos nomes foram encontrados
+        // Conta quantos nomes foram encontrados (usando resultados ABB)
         int encontrados = 0;
         int totalReservasEncontradas = 0;
-        for (LCItem resultado : resultadosPesquisa) {
+        for (LCItem resultado : resultadosPesquisaABB) {
             if (resultado != null && !resultado.eVazia()) {
                 encontrados++;
                 totalReservasEncontradas += resultado.getQuant();
             }
         }
         System.out.printf("  Nomes encontrados: %d de %d (%.1f%%)\n", 
-            encontrados, nomesPesquisa.length, 
-            (encontrados * 100.0) / nomesPesquisa.length);
-        System.out.println("  Total de reservas encontradas: " + totalReservasEncontradas);
+            encontrados, nomesPesquisa.getQuant(), 
+            (encontrados * 100.0) / nomesPesquisa.getQuant());
+        System.out.println("  Total de reservas: " + totalReservasEncontradas);
     }
 }

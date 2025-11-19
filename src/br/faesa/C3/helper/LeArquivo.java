@@ -81,7 +81,7 @@ public class LeArquivo {
     }
 
     /**
-     * Lê o arquivo de nomes para pesquisa.
+     * Lê um arquivo de nomes (um nome por linha) e retorna um array de strings.
      * @param caminhoArquivo Caminho do arquivo (ex: "data/raw/nome.txt")
      * @return Array com os nomes a serem pesquisados
      */
@@ -97,5 +97,28 @@ public class LeArquivo {
         }
         
         return nomes.toArray(new String[0]);
+    }
+
+    /**
+     * Lê um arquivo de nomes (um nome por linha) e retorna uma LCItem.
+     * Cada nome é armazenado como um Item com chave = índice.
+     * @param caminhoArquivo Caminho do arquivo (ex: "data/raw/nome.txt")
+     * @return LCItem contendo os nomes a serem pesquisados
+     */
+    public static LCItem lerNomesComoLCItem(String caminhoArquivo) {
+        List<String> linhas = lerLinhas(caminhoArquivo);
+        
+        // Cria LCItem com capacidade inicial estimada
+        LCItem nomes = new LCItem(linhas.size());
+        
+        // Adiciona cada nome como um Item (usando índice como chave)
+        int indice = 0;
+        for (String linha : linhas) {
+            if (linha != null && !linha.trim().isEmpty()) {
+                nomes.insereFinal(new Item(indice++, linha.trim()));
+            }
+        }
+        
+        return nomes;
     }
 }
