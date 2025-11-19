@@ -82,4 +82,54 @@ public class EscreveArquivo {
             writer.newLine();
         }
     }
+
+    /**
+     * Formata o resultado de uma pesquisa para um único nome.
+     * 
+     * @param nome Nome pesquisado
+     * @param reservas Lista de reservas encontradas (ou null se não encontrado)
+     * @return String formatada com o resultado da pesquisa
+     */
+    public static String formatarResultadoPesquisa(String nome, LCItem reservas) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("NOME ").append(nome).append(":\n");
+        
+        if (reservas == null || reservas.eVazia()) {
+            sb.append("NÃO TEM RESERVA\n");
+        } else {
+            for (int i = 0; i < reservas.getQuant(); i++) {
+                Item item = reservas.getItem(i);
+                sb.append(String.format("Reserva: %s Voo: %s Data: %s Assento: %s\n",
+                    item.getChave(),
+                    item.getCodigoVoo(),
+                    item.getData(),
+                    item.getAssento()));
+            }
+            sb.append(String.format("TOTAL: %d reserva%s\n", 
+                reservas.getQuant(), 
+                reservas.getQuant() > 1 ? "s" : ""));
+        }
+        
+        return sb.toString();
+    }
+
+    /**
+     * Salva os resultados de múltiplas pesquisas em arquivo.
+     * 
+     * @param caminhoArquivo Caminho do arquivo de saída
+     * @param nomesPesquisados Array com os nomes pesquisados
+     * @param resultados Array com as listas de reservas encontradas (pode conter nulls)
+     * @throws IOException Se houver erro ao escrever
+     */
+    public static void salvarResultadosPesquisa(String caminhoArquivo, String[] nomesPesquisados, 
+            LCItem[] resultados) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
+            for (int i = 0; i < nomesPesquisados.length; i++) {
+                String resultado = formatarResultadoPesquisa(nomesPesquisados[i], resultados[i]);
+                writer.write(resultado);
+                writer.newLine(); // Linha em branco entre pesquisas
+            }
+        }
+        System.out.println("Resultados salvos em: " + caminhoArquivo);
+    }
 }

@@ -7,6 +7,5 @@ public interface Ordenavel {
     void heapsort();
     void quicksort();
     void quicksortComInsercao();
-    void quicksortComInsercaoExato();
     boolean eVazia();
 }

@@ -79,4 +79,23 @@ public class LeArquivo {
         
         return new Item(chave, nome, codigo_voo, data, assento);
     }
+
+    /**
+     * Lê o arquivo de nomes para pesquisa.
+     * @param caminhoArquivo Caminho do arquivo (ex: "data/raw/nome.txt")
+     * @return Array com os nomes a serem pesquisados
+     */
+    public static String[] lerNomes(String caminhoArquivo) {
+        List<String> linhas = lerLinhas(caminhoArquivo);
+        
+        // Remove linhas vazias e faz trim
+        List<String> nomes = new ArrayList<>();
+        for (String linha : linhas) {
+            if (linha != null && !linha.trim().isEmpty()) {
+                nomes.add(linha.trim());
+            }
+        }
+        
+        return nomes.toArray(new String[0]);
+    }
 }

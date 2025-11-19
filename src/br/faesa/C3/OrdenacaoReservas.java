@@ -27,11 +27,10 @@ public class OrdenacaoReservas {
         datasets.insereFinal(new Item(0, "Reserva50000inv"));
 
         // Lista com todos os algoritmos
-        LCItem algoritmos = new LCItem(4);
+        LCItem algoritmos = new LCItem(3);
         algoritmos.insereFinal(new Item(0, "HeapSort"));
         algoritmos.insereFinal(new Item(0, "QuickSort"));
         algoritmos.insereFinal(new Item(0, "QuickSortInsertion"));
-        algoritmos.insereFinal(new Item(0, "QuickSortInsertionExato"));
 
         // Processa cada dataset com todos os algoritmos
         for (int i = 0; i < datasets.getQuant(); i++) {
@@ -51,7 +50,7 @@ public class OrdenacaoReservas {
     /**
      * Carrega, ordena e salva um dataset específico.
      * @param nomeDataset Nome do dataset
-     * @param algoritmo Nome do algoritmo ("HeapSort", "QuickSort", "QuickSortInsertion" ou "QuickSortInsertionExato")
+     * @param algoritmo Nome do algoritmo ("HeapSort", "QuickSort" ou "QuickSortInsertion")
      * @param primeiraLinha Se true, escreve o cabeçalho do CSV
      */
     private static void processarDataset(String nomeDataset, String algoritmo, boolean primeiraLinha) {
@@ -61,10 +60,8 @@ public class OrdenacaoReservas {
             prefixo = "heap";
         } else if (algoritmo.equals("QuickSort")) {
             prefixo = "quick";
-        } else if (algoritmo.equals("QuickSortInsertion")) {
-            prefixo = "QuickIns";
         } else {
-            prefixo = "QuickIns20";
+            prefixo = "QuickIns";
         }
         String caminhoSaida = "data/sorted/" + prefixo + nomeDataset + ".txt";
 
@@ -85,10 +82,8 @@ public class OrdenacaoReservas {
                     reservas.heapsort();
                 } else if (algoritmo.equals("QuickSort")) {
                     reservas.quicksort();
-                } else if (algoritmo.equals("QuickSortInsertion")) {
-                    reservas.quicksortComInsercao();
                 } else {
-                    reservas.quicksortComInsercaoExato();
+                    reservas.quicksortComInsercao();
                 }
             }
             

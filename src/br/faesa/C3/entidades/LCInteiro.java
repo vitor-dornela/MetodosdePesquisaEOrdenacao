@@ -195,11 +195,6 @@ public class LCInteiro implements Ordenavel {
         QuickSortComInsercao.sort(this.lista, this.quant);
     }
 
-    // --- QUICKSORT WITH INSERTION (EXACTLY 20) ---
-    public void quicksortComInsercaoExato() {
-        QuickSortComInsercaoExato.sort(this.lista, this.quant);
-    }
-
     // --- HEAPSORT ---
     public void heapsort() {
         HeapSort.sort(this.lista, this.quant);

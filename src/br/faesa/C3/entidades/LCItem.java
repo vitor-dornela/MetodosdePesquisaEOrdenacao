@@ -165,14 +165,6 @@ public class LCItem implements Ordenavel {
     }
 
     /**
-     * Ordena a lista usando QuickSort com InsertionSort APENAS quando a partição
-     * tem exatamente 20 elementos.
-     */
-    public void quicksortComInsercaoExato() {
-        QuickSortComInsercaoExato.sort(this.lista, this.quant);
-    }
-
-    /**
      * Ordena a lista usando InsertionSort.
      */
     public void insertionSort() {

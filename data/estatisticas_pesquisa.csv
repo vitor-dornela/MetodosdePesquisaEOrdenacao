@@ -1,0 +1,13 @@
+Dataset;Algoritmo;Elementos;Media(ms)
+Reserva1000alea;ABB;1000;1,80
+Reserva1000ord;ABB;1000;2,40
+Reserva1000inv;ABB;1000;0,80
+Reserva5000alea;ABB;5000;3,20
+Reserva5000ord;ABB;5000;2,20
+Reserva5000inv;ABB;5000;2,00
+Reserva10000alea;ABB;10000;9,00
+Reserva10000ord;ABB;10000;4,80
+Reserva10000inv;ABB;10000;3,40
+Reserva50000alea;ABB;50000;43,60
+Reserva50000ord;ABB;50000;16,60
+Reserva50000inv;ABB;50000;16,20

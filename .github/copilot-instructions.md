@@ -34,7 +34,6 @@ listaInt.quicksort();  // Calls QuickSort.sort(this.lista, this.quant)
 - `QuickSort` - Quick sort for `Item[]` and `Integer[]`
 - `InsertionSort` - Insertion sort with `sort()` and `sortRange()` methods
 - `QuickSortComInsercao` - Hybrid: QuickSort switching to InsertionSort for partitions ≤20 elements
-- `QuickSortComInsercaoExato` - Hybrid: QuickSort switching to InsertionSort for partitions ==20 elements
 
 ## Code Conventions
 
@@ -42,7 +41,7 @@ listaInt.quicksort();  // Calls QuickSort.sort(this.lista, this.quant)
 - `br.faesa.C3.algoritmos.entidades` - Data structures (`LCInteiro`, `LCItem`, `Item`)
 - `br.faesa.C3.algoritmos.ordenacao` - Standalone sorting implementations with overloaded methods:
   - `HeapSort`, `QuickSort`, `InsertionSort`
-  - `QuickSortComInsercao` (≤20), `QuickSortComInsercaoExato` (==20)
+  - `QuickSortComInsercao` (≤20)
 - `br.faesa.C3.algoritmos.helper` - File I/O utilities (`LeArquivo`, `EscreveArquivo`)
 - `br.faesa.C3.algoritmos.pesquisa.AVL` - AVL tree implementation
 - `data/` - Data files (separate from source code):
@@ -86,7 +85,6 @@ LCItem reservas = LeArquivo.lerReservas("data/raw/Reserva1000alea.txt");
 reservas.heapsort();  // Sort by name, then by key
 reservas.quicksort();
 reservas.quicksortComInsercao();      // Hybrid ≤20
-reservas.quicksortComInsercaoExato(); // Hybrid ==20
 
 // Option 2: Use sorting classes directly
 HeapSort.sort(reservas.getLista(), reservas.getQuant());
@@ -121,13 +119,11 @@ public void heapsort() {
 2. **QuickSort** - Standard quicksort with middle pivot
 3. **InsertionSort** - Insertion sort with range support
 4. **QuickSortComInsercao** - Hybrid: switches to insertion sort when partition ≤20
-5. **QuickSortComInsercaoExato** - Hybrid: switches to insertion sort when partition ==20
 
 ### Hybrid Sorting Strategy
-The hybrid algorithms improve performance on small partitions:
+The hybrid algorithm improves performance on small partitions:
 - Use QuickSort for large partitions (efficient for large data)
-- Switch to InsertionSort for small partitions (efficient for small data)
-- Threshold variants: `≤20` vs `==20` for performance comparison
+- Switch to InsertionSort for small partitions ≤20 elements (efficient for small data)
 
 ### AVL Tree Implementation
 - Balancing handled via `fatorBalanceamento` (-1, 0, 1) tracked in each `NoAVL`
@@ -144,7 +140,7 @@ Multiple dataset sizes with three orderings each:
 
 ### Main Programs
 - `Main.java` - Original tests for `LCInteiro` and AVL tree
-- `OrdenacaoReservas.java` - Performance comparison of all 4 algorithms across 12 datasets
+- `OrdenacaoReservas.java` - Performance comparison of 3 algorithms across 12 datasets
   - Runs each algorithm 5 times per dataset
   - Calculates mean execution time
   - Saves sorted results to `data/sorted/`
@@ -157,14 +153,12 @@ Multiple dataset sizes with three orderings each:
   HeapSort: 12.40 ms
   QuickSort: 10.20 ms
   QuickSortInsertion: 9.80 ms
-  QuickSortInsertionExato: 10.10 ms
 ```
 
 ### Output Files
 - `data/sorted/heap*.txt` - HeapSort results
 - `data/sorted/quick*.txt` - QuickSort results
 - `data/sorted/QuickIns*.txt` - QuickSortComInsercao results
-- `data/sorted/QuickIns20*.txt` - QuickSortComInsercaoExato results
 - `data/estatisticas.csv` - CSV with columns: Dataset, Algoritmo, Elementos, Media(ms)
 
 ## Adding New Features

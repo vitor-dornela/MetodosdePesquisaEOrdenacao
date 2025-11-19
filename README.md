@@ -16,19 +16,21 @@ Projeto acadêmico implementando algoritmos clássicos de ordenação e pesquisa
 
 ## 🎯 Visão Geral
 
-Este projeto implementa e compara o desempenho de diversos algoritmos de ordenação aplicados a dados de reservas. O sistema foi projetado com separação clara de responsabilidades:
+Este projeto implementa e compara o desempenho de diversos algoritmos de ordenação e estruturas de pesquisa aplicados a dados de reservas. O sistema foi projetado com separação clara de responsabilidades:
 
 - **Estruturas de Dados**: Gerenciam os dados (listas dinâmicas)
 - **Algoritmos de Ordenação**: Implementações standalone e reutilizáveis
-- **Estruturas de Pesquisa**: Árvore AVL para busca eficiente
+- **Estruturas de Pesquisa**: Árvore AVL e ABB (Árvore Binária de Busca)
 
 ### Características Principais
 
-✅ **5 Algoritmos de Ordenação** com análise comparativa de desempenho  
+✅ **4 Algoritmos de Ordenação** com análise comparativa de desempenho  
+✅ **Pesquisa ABB Otimizada** com solução para StackOverflowError em grandes datasets  
 ✅ **Sobrecarga de Métodos** para trabalhar com `Item[]` e `Integer[]`  
 ✅ **Padrão de Delegação** entre estruturas de dados e algoritmos  
 ✅ **Medição Automática** de tempo de execução (média de 5 rodadas)  
-✅ **Exportação de Resultados** ordenados e estatísticas em CSV  
+✅ **Exportação de Resultados** ordenados, pesquisas e estatísticas em CSV  
+✅ **Suporte a Nomes Duplicados** com múltiplas reservas por nome na ABB  
 
 ## 📁 Estrutura do Projeto
 
@@ -37,7 +39,8 @@ MetodosdePesquisaEOrdenacao/
 ├── src/
 │   └── br/faesa/C3/
 │       ├── Main.java                      # Testes básicos
-│       ├── OrdenacaoReservas.java         # Programa principal de benchmark
+│       ├── OrdenacaoReservas.java         # Benchmark de ordenação
+│       ├── PesquisaReservas.java          # Benchmark de pesquisa ABB
 │       └── algoritmos/
 │           ├── entidades/
 │           │   ├── Item.java              # Modelo de dados de reserva
@@ -47,30 +50,39 @@ MetodosdePesquisaEOrdenacao/
 │           │   ├── HeapSort.java          # Heap sort
 │           │   ├── QuickSort.java         # Quick sort
 │           │   ├── InsertionSort.java     # Insertion sort
-│           │   ├── QuickSortComInsercao.java        # Híbrido ≤20
-│           │   └── QuickSortComInsercaoExato.java   # Híbrido ==20
+│           │   └── QuickSortComInsercao.java        # Híbrido ≤20
 │           ├── helper/
 │           │   ├── LeArquivo.java         # Leitura de arquivos
 │           │   └── EscreveArquivo.java    # Escrita de arquivos
 │           └── pesquisa/
-│               └── AVL/
-│                   ├── ArvoreAVL.java     # Árvore AVL
-│                   └── NoAVL.java         # Nó da árvore
+│               ├── AVL/
+│               │   ├── ArvoreAVL.java     # Árvore AVL (inteiros)
+│               │   └── NoAVL.java         # Nó da árvore AVL
+│               └── ABB/
+│                   ├── ArvoreABB.java     # ABB para inteiros
+│                   ├── ArvoreABBItem.java # ABB para reservas
+│                   ├── NoABB.java         # Nó ABB (inteiro)
+│                   └── NoABBItem.java     # Nó ABB (Item)
 ├── data/
 │   ├── raw/                               # Datasets de entrada
 │   │   ├── Reserva1000alea.txt
 │   │   ├── Reserva1000ord.txt
 │   │   ├── Reserva1000inv.txt
+│   │   ├── nome.txt                       # 400 nomes para pesquisa
 │   │   └── ... (12 arquivos no total)
 │   ├── sorted/                            # Resultados ordenados
-│   └── estatisticas.csv                   # Estatísticas de desempenho
+│   ├── searched/                          # Resultados de pesquisa
+│   ├── estatisticas.csv                   # Estatísticas de ordenação
+│   └── estatisticas_pesquisa.csv          # Estatísticas de pesquisa
 └── .github/
     └── copilot-instructions.md            # Documentação técnica
 ```
 
 ## 🔧 Algoritmos Implementados
 
-### 1. HeapSort
+### Algoritmos de Ordenação
+
+#### 1. HeapSort
 Algoritmo baseado em heap binária que garante O(n log n) no pior caso.
 
 **Características:**
@@ -79,7 +91,7 @@ Algoritmo baseado em heap binária que garante O(n log n) no pior caso.
 - In-place: Sim
 - Uso: Bom para grandes datasets com garantia de performance
 
-### 2. QuickSort
+#### 2. QuickSort
 Algoritmo de divisão e conquista com pivô no elemento do meio.
 
 **Características:**
@@ -88,7 +100,7 @@ Algoritmo de divisão e conquista com pivô no elemento do meio.
 - In-place: Sim
 - Uso: Excelente performance média na prática
 
-### 3. InsertionSort
+#### 3. InsertionSort
 Algoritmo simples e eficiente para pequenos conjuntos ou dados quase ordenados.
 
 **Características:**
@@ -97,7 +109,7 @@ Algoritmo simples e eficiente para pequenos conjuntos ou dados quase ordenados.
 - In-place: Sim
 - Uso: Ideal para arrays pequenos (< 20 elementos)
 
-### 4. QuickSortComInsercao (Híbrido ≤20)
+#### 4. QuickSortComInsercao (Híbrido ≤20)
 Combina QuickSort com InsertionSort: quando uma partição tem **20 ou menos elementos**, usa InsertionSort.
 
 **Características:**
@@ -105,12 +117,59 @@ Combina QuickSort com InsertionSort: quando uma partição tem **20 ou menos ele
 - Usa InsertionSort para partições pequenas (mais eficiente)
 - Melhora a performance geral em datasets variados
 
-### 5. QuickSortComInsercaoExato (Híbrido ==20)
-Variante que usa InsertionSort **apenas quando a partição tem exatamente 20 elementos**.
+### Estruturas de Pesquisa
+
+#### ABB (Árvore Binária de Busca)
+Árvore binária de busca implementada para pesquisa eficiente de reservas por nome.
 
 **Características:**
-- Experimental: compara performance com threshold flexível
-- Permite análise do impacto do threshold específico
+- Complexidade de busca: O(log n) balanceada, O(n) pior caso
+- Suporta nomes duplicados usando lista de reservas por nó
+- Balanceamento via método `balancear()` com construção O(n log n)
+
+**Implementação:**
+- `NoABBItem`: Nó contendo nome (String) e lista de reservas (LCItem)
+- `ArvoreABBItem`: Árvore com métodos de inserção, busca, remoção e balanceamento
+
+**⚠️ Problema Crítico Resolvido: StackOverflowError**
+
+**O Problema:**
+Ao inserir dados **ordenados** (ex: 50.000 registros em ordem alfabética) um por um em uma ABB, a árvore se torna completamente desbalanceada, essencialmente uma lista encadeada de 50.000 níveis de profundidade. Isso causa **StackOverflowError** devido à profundidade excessiva da recursão durante inserção e busca.
+
+```java
+// ABORDAGEM TRADICIONAL (FALHA!)
+ArvoreABBItem abb = new ArvoreABBItem();
+for (int i = 0; i < 50000; i++) {
+    abb.insere(item);  // ← StackOverflowError em dados ordenados!
+}
+abb = abb.balancear();  // Nunca chega aqui
+```
+
+**A Solução:**
+Implementamos o método `construirBalanceada()` que constrói uma árvore **já balanceada** usando divide-and-conquer:
+
+```java
+// SOLUÇÃO OTIMIZADA
+ArvoreABBItem abb = new ArvoreABBItem();
+abb.construirBalanceada(reservas);  // Constrói árvore balanceada diretamente
+```
+
+**Como funciona:**
+1. Recebe a lista completa de itens
+2. Insere o elemento do **meio** como raiz
+3. Recursivamente constrói subárvore esquerda (metade esquerda dos dados)
+4. Recursivamente constrói subárvore direita (metade direita dos dados)
+5. Garante altura O(log n) desde o início
+
+**Resultado:**
+- ✅ Nenhum StackOverflowError, mesmo com 50.000 elementos ordenados
+- ✅ Performance 64-84x melhor em dados ordenados (de 115ms para 1.8ms)
+- ✅ Todos os 12 datasets processam com sucesso
+
+**Características:**
+- Aproveita a eficiência do QuickSort para grandes partições
+- Usa InsertionSort para partições pequenas (mais eficiente)
+- Melhora a performance geral em datasets variados
 
 ## 📊 Estruturas de Dados
 
@@ -194,7 +253,7 @@ QuickSort.sort(array, tamanho);
 InsertionSort.sortRange(array, 0, 19);  // Ordenar apenas um intervalo
 ```
 
-### Benchmark Completo
+### Benchmark de Ordenação
 
 ```java
 // Executar OrdenacaoReservas.java
@@ -203,6 +262,23 @@ InsertionSort.sortRange(array, 0, 19);  // Ordenar apenas um intervalo
 // - 4 algoritmos por dataset
 // - 5 execuções por algoritmo
 // - Calcula médias e salva estatísticas
+```
+
+### Benchmark de Pesquisa ABB
+
+```java
+// Executar PesquisaReservas.java
+// Processa automaticamente:
+// - Carrega cada dataset (12 arquivos)
+// - Constrói ABB balanceada 5 vezes
+// - Pesquisa 400 nomes em cada execução
+// - Calcula tempo médio
+// - Salva resultados de pesquisa e estatísticas
+
+// Exemplo de saída:
+// ABBReserva1000alea.txt - resultados para cada nome pesquisado
+// Nomes encontrados: 140 de 400 (35.0%)
+// Total de reservas: 195
 ```
 
 ## 💡 Exemplos de Código
@@ -276,7 +352,7 @@ java -cp src br.faesa.C3.OrdenacaoReservas
 
 ### Saída Esperada
 
-```
+```text
 === PROCESSANDO: Reserva1000alea ===
 
   HeapSort: 12.40 ms
@@ -349,8 +425,11 @@ javac -d out src/br/faesa/C3/**/*.java
 ### Executar
 
 ```bash
-# Programa principal (benchmark completo)
+# Benchmark de ordenação
 java -cp out br.faesa.C3.OrdenacaoReservas
+
+# Benchmark de pesquisa (ABB)
+java -cp out br.faesa.C3.PesquisaReservas
 
 # Testes básicos
 java -cp out Main
@@ -404,6 +483,10 @@ java -cp out Main
 
 ### Resultados inconsistentes
 **Solução:** Execute múltiplas vezes (o programa já faz 5 rodadas e calcula a média automaticamente).
+
+### Erro: "StackOverflowError" em ABB com dados ordenados
+**Causa:** Inserir dados ordenados um por um cria árvore desbalanceada (lista encadeada de 50k níveis).  
+**Solução:** O programa já usa `construirBalanceada()` que evita este problema. Se implementar sua própria ABB, sempre construa balanceada desde o início.
 
 ## 🤝 Contribuindo
 
