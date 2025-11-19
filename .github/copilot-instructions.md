@@ -44,9 +44,12 @@ listaInt.quicksort();  // Calls QuickSort.sort(this.lista, this.quant)
   - `QuickSortComInsercao` (≤20)
 - `br.faesa.C3.algoritmos.helper` - File I/O utilities (`LeArquivo`, `EscreveArquivo`)
 - `br.faesa.C3.algoritmos.pesquisa.AVL` - AVL tree implementation
+- `br.faesa.C3.algoritmos.pesquisa.ABB` - Binary search tree implementation
+- `br.faesa.C3.algoritmos.pesquisa.Hashing` - Hash table with chaining implementation
 - `data/` - Data files (separate from source code):
   - `data/raw/` - Input datasets (read via file system)
   - `data/sorted/` - Sorted output files
+  - `data/searched/` - Search result files
   - `data/estatisticas.csv` - Performance statistics
 
 ### Naming & Style
@@ -125,10 +128,25 @@ The hybrid algorithm improves performance on small partitions:
 - Use QuickSort for large partitions (efficient for large data)
 - Switch to InsertionSort for small partitions ≤20 elements (efficient for small data)
 
-### AVL Tree Implementation
+### Search Algorithm Architecture
+
+#### AVL Tree Implementation
 - Balancing handled via `fatorBalanceamento` (-1, 0, 1) tracked in each `NoAVL`
 - Rotations are recursive and update balance factors: `rotaçãoDireita()`, `rotaçãoEsquerda()`
 - Insert triggers auto-balancing through `balancearDir()` / `balancearEsq()` checks
+
+#### ABB (Binary Search Tree) Implementation
+- Balanced construction from sorted `LCItem` via `construirBalanceada()`
+- Search by name returns `LCItem` with all matching reservations
+
+#### Hashing Encadeado (Chained Hashing) Implementation
+- **Collision resolution**: Linked list chaining (`NoHash` nodes)
+- **Hash function**: Sum of ASCII values modulo table size
+- **Table sizing**: Prime number ~1.3x dataset size for load factor ~0.75
+- **Key operations**:
+  - `inserir(Item)` - Adds to front of chain (O(1))
+  - `pesquisar(String nome)` - Returns `LCItem` with all matches (O(1) average)
+  - `carregarDeLCItem(LCItem)` - Bulk load from dataset
 
 ### Test Data Files
 Multiple dataset sizes with three orderings each:
@@ -139,27 +157,52 @@ Multiple dataset sizes with three orderings each:
 ## Running the Project
 
 ### Main Programs
-- `Main.java` - Original tests for `LCInteiro` and AVL tree
-- `OrdenacaoReservas.java` - Performance comparison of 3 algorithms across 12 datasets
-  - Runs each algorithm 5 times per dataset
-  - Calculates mean execution time
-  - Saves sorted results to `data/sorted/`
-  - Appends statistics to `data/estatisticas.csv`
 
-### Expected Output Pattern
+#### `OrdenacaoReservas.java` - Sorting Performance Comparison
+- Compares 3 sorting algorithms across 12 datasets
+- Runs each algorithm 5 times per dataset
+- Calculates mean execution time
+- Saves sorted results to `data/sorted/`
+- Appends statistics to `data/estatisticas.csv`
+
+**Expected Output:**
 ```
 === PROCESSANDO: Reserva1000alea ===
-
   HeapSort: 12.40 ms
   QuickSort: 10.20 ms
   QuickSortInsertion: 9.80 ms
 ```
 
+#### `PesquisaReservas.java` - Search Performance Comparison
+- Compares 3 search structures (ABB, AVL, Hashing) across 12 datasets
+- For each dataset:
+  1. Loads reservas from file
+  2. Builds search structure
+  3. Searches 400 names from `nome.txt`
+  4. Repeats 5 times for average timing
+  5. Saves results to `data/searched/`
+- Appends statistics to `data/estatisticas_pesquisa.csv`
+
+**Expected Output:**
+```
+=== PROCESSANDO: Reserva1000alea ===
+  ABB: 45.20 ms
+  AVL: 48.60 ms
+  Hashing: 23.40 ms
+```
+
 ### Output Files
+**Sorting:**
 - `data/sorted/heap*.txt` - HeapSort results
 - `data/sorted/quick*.txt` - QuickSort results
 - `data/sorted/QuickIns*.txt` - QuickSortComInsercao results
-- `data/estatisticas.csv` - CSV with columns: Dataset, Algoritmo, Elementos, Media(ms)
+- `data/estatisticas.csv` - CSV: Dataset, Algoritmo, Elementos, Media(ms)
+
+**Searching:**
+- `data/searched/ABB*.txt` - ABB search results
+- `data/searched/AVL*.txt` - AVL search results
+- `data/searched/Hash*.txt` - Hashing search results
+- `data/estatisticas_pesquisa.csv` - CSV: Dataset, Algoritmo, Elementos, Media(ms)
 
 ## Adding New Features
 
