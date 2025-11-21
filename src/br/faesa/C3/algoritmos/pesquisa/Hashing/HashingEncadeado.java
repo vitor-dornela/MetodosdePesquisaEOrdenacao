@@ -23,20 +23,18 @@ public class HashingEncadeado {
     }
 
     /**
-     * Função hash: converte nome em índice da tabela.
-     * Usa soma dos valores ASCII dos caracteres, módulo tamanho.
+     * Função hash para chave alfanumérica.
+     * Transforma a chave String em valor numérico somando os valores dos caracteres.
+     * Retorna o índice na tabela usando módulo do tamanho (M).
      */
-    private int funcaoHash(String nome) {
-        if (estaVazia(nome)) {
-            return 0;
+    public int hashing(String chave) {
+        char carac;
+        int i, soma = 0;
+        for (i = 0; i < chave.length(); i++) {
+            carac = chave.charAt(i);
+            soma += Character.getNumericValue(carac);
         }
-
-        int hash = 0;
-        for (int i = 0; i < nome.length(); i++) {
-            hash += nome.charAt(i);
-        }
-        
-        return Math.abs(hash % tamanho);
+        return soma % tamanho;
     }
 
     /**
@@ -49,7 +47,7 @@ public class HashingEncadeado {
             return;
         }
 
-        int indice = funcaoHash(item.getNome());
+        int indice = hashing(item.getNome());
         NoHash atual = tabela[indice];
 
         // Procura se o nome já existe na lista encadeada
@@ -78,7 +76,7 @@ public class HashingEncadeado {
             return new LCItem();
         }
 
-        int indice = funcaoHash(nome);
+        int indice = hashing(nome);
         NoHash atual = tabela[indice];
 
         // Percorre a lista encadeada naquela posição

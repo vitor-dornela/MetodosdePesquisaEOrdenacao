@@ -221,8 +221,8 @@ public class PesquisaReservas {
      * Usado para definir tamanho ótimo da tabela hash.
      */
     private static int calcularTamanhoPrimo(int n) {
-        // Ajusta para um valor próximo (aproximadamente 1.3x para load factor ~0.75)
-        int candidato = (int) (n * 1.3);
+        // Ajusta para um valor próximo (Para lista encadeada será usado 1.1)
+        int candidato = (int) (n * 1.0);
         
         // Garante que seja ímpar
         if (candidato % 2 == 0) {
