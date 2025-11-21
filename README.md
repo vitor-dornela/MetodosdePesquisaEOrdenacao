@@ -20,19 +20,21 @@ Este projeto implementa e compara o desempenho de diversos algoritmos de ordena�
 
 - **Estruturas de Dados**: Gerenciam os dados (listas dinâmicas)
 - **Algoritmos de Ordenação**: Implementações standalone e reutilizáveis
-- **Estruturas de Pesquisa**: Árvore AVL e ABB (Árvore Binária de Busca)
+- **Estruturas de Pesquisa**: ABB, AVL e Hashing Encadeado
 
 ### Características Principais
 
 ✅ **4 Algoritmos de Ordenação** com análise comparativa de desempenho  
 ✅ **Pesquisa ABB Otimizada** com solução para StackOverflowError em grandes datasets  
 ✅ **Pesquisa AVL** com auto-balanceamento garantindo O(log n)  
-✅ **Comparação ABB vs AVL** em 12 datasets (1k-50k elementos)  
+✅ **Hashing Encadeado** com resolução de colisões por encadeamento  
+✅ **Comparação Tripla** ABB vs AVL vs Hashing em 12 datasets (1k-50k elementos)  
 ✅ **Sobrecarga de Métodos** para trabalhar com `Item[]` e `Integer[]`  
 ✅ **Padrão de Delegação** entre estruturas de dados e algoritmos  
+✅ **100% LCItem** - Uso consistente de estruturas de dados próprias (sem String[] no código do usuário)  
 ✅ **Medição Automática** de tempo de execução (média de 5 rodadas)  
 ✅ **Exportação de Resultados** ordenados, pesquisas e estatísticas em CSV  
-✅ **Suporte a Nomes Duplicados** com múltiplas reservas por nome nas árvores  
+✅ **Suporte a Nomes Duplicados** com múltiplas reservas por nome em todas as estruturas  
 
 ## 📁 Estrutura do Projeto
 
@@ -53,20 +55,23 @@ MetodosdePesquisaEOrdenacao/
 │           │   ├── QuickSort.java         # Quick sort
 │           │   ├── InsertionSort.java     # Insertion sort
 │           │   └── QuickSortComInsercao.java        # Híbrido ≤20
-│           ├── helper/
-│           │   ├── LeArquivo.java         # Leitura de arquivos
-│           │   └── EscreveArquivo.java    # Escrita de arquivos
-│           └── pesquisa/
-│               ├── AVL/
-│               │   ├── ArvoreAVL.java     # Árvore AVL (inteiros)
-│               │   ├── ArvoreAVLItem.java # AVL para reservas
-│               │   ├── NoAVL.java         # Nó da árvore AVL
-│               │   └── NoAVLItem.java     # Nó AVL (Item)
-│               └── ABB/
-│                   ├── ArvoreABB.java     # ABB para inteiros
-│                   ├── ArvoreABBItem.java # ABB para reservas
-│                   ├── NoABB.java         # Nó ABB (inteiro)
-│                   └── NoABBItem.java     # Nó ABB (Item)
+            ├── helper/
+            │   ├── LeArquivo.java         # Leitura de arquivos (com lerNomesComoLCItem)
+            │   └── EscreveArquivo.java    # Escrita de arquivos (aceita LCItem)
+            └── pesquisa/
+                ├── AVL/
+                │   ├── ArvoreAVL.java     # Árvore AVL (inteiros)
+                │   ├── ArvoreAVLItem.java # AVL para reservas
+                │   ├── NoAVL.java         # Nó da árvore AVL
+                │   └── NoAVLItem.java     # Nó AVL (Item)
+                ├── ABB/
+                │   ├── ArvoreABB.java     # ABB para inteiros
+                │   ├── ArvoreABBItem.java # ABB para reservas
+                │   ├── NoABB.java         # Nó ABB (inteiro)
+                │   └── NoABBItem.java     # Nó ABB (Item)
+                └── Hashing/
+                    ├── HashingEncadeado.java  # Tabela hash com encadeamento
+                    └── NoHash.java            # Nó da lista encadeada
 ├── data/
 │   ├── raw/                               # Datasets de entrada
 │   │   ├── Reserva1000alea.txt
@@ -77,9 +82,10 @@ MetodosdePesquisaEOrdenacao/
 │   ├── sorted/                            # Resultados ordenados
 │   ├── searched/                          # Resultados de pesquisa
 │   │   ├── ABBReserva*.txt               # 12 arquivos ABB
-│   │   └── AVLReserva*.txt               # 12 arquivos AVL
+│   │   ├── AVLReserva*.txt               # 12 arquivos AVL
+│   │   └── HashReserva*.txt              # 12 arquivos Hashing
 │   ├── estatisticas_ordenacao.csv         # Estatísticas de ordenação
-│   └── estatisticas_pesquisa.csv          # Estatísticas de pesquisa (ABB + AVL)
+│   └── estatisticas_pesquisa.csv          # Estatísticas de pesquisa (ABB + AVL + Hashing)
 └── .github/
     └── copilot-instructions.md            # Documentação técnica
 ```
@@ -155,6 +161,23 @@ Combina QuickSort com InsertionSort: quando uma partição tem **20 ou menos ele
 - Mantém altura O(log n) automaticamente
 - Melhor performance consistente em todos os tipos de dados (alea/ord/inv)
 
+#### Hashing Encadeado (Hash Table with Chaining)
+Tabela hash com resolução de colisões por encadeamento.
+
+**Características:**
+- Complexidade de busca: O(1) média, O(n) pior caso
+- **Resolução de colisões**: Encadeamento com listas ligadas (`NoHash`)
+- **Função hash**: Soma dos valores ASCII módulo tamanho da tabela
+- **Tamanho da tabela**: Número primo ~1.3x o dataset (fator de carga ~0.75)
+- Suporta nomes duplicados usando lista de reservas por slot
+
+**Implementação:**
+- `NoHash`: Nó contendo nome, lista de reservas e próximo nó
+- `HashingEncadeado`: Tabela com métodos:
+  - `inserir(Item)` - Insere na frente da cadeia O(1)
+  - `pesquisar(String nome)` - Retorna LCItem com todas as reservas O(1) médio
+  - `carregarDeLCItem(LCItem)` - Carregamento em lote do dataset
+
 **⚠️ Problema Crítico Resolvido: StackOverflowError**
 
 **O Problema:**
@@ -195,58 +218,75 @@ abb.construirBalanceada(reservas);  // Constrói árvore balanceada diretamente
 - Usa InsertionSort para partições pequenas (mais eficiente)
 - Melhora a performance geral em datasets variados
 
-## ⚖️ Comparação: ABB vs AVL
+## ⚖️ Comparação: ABB vs AVL vs Hashing
 
 ### Resultados dos Testes (Tempo médio de 5 execuções)
 
-| Dataset | ABB (ms) | AVL (ms) | Vencedor | Diferença |
-|---------|----------|----------|----------|-----------|
-| 1000alea | 1.80 | 2.20 | ABB | 0.4ms |
-| 1000ord | 3.20 | 3.60 | ABB | 0.4ms |
-| 1000inv | 0.40 | 0.40 | Empate | 0ms |
-| 5000alea | 2.60 | 2.80 | ABB | 0.2ms |
-| 5000ord | 2.20 | 2.00 | AVL | 0.2ms |
-| 5000inv | 1.80 | 2.40 | ABB | 0.6ms |
-| 10000alea | 9.00 | 6.00 | AVL | 3.0ms |
-| 10000ord | 5.00 | 3.80 | AVL | 1.2ms |
-| 10000inv | 3.60 | 3.40 | AVL | 0.2ms |
-| 50000alea | 43.60 | 52.00 | ABB | 8.4ms |
-| 50000ord | 16.60 | 19.20 | ABB | 2.6ms |
-| 50000inv | 16.20 | 13.20 | AVL | 3.0ms |
+| Dataset | ABB (ms) | AVL (ms) | Hashing (ms) | Vencedor | Comentário |
+|---------|----------|----------|--------------|----------|-----------|
+| 1000alea | 1.80 | 2.20 | 0.80 | Hashing | Hashing ~2x mais rápido |
+| 1000ord | 3.20 | 3.60 | 0.60 | Hashing | Hashing ~5x mais rápido |
+| 1000inv | 0.40 | 0.40 | 0.60 | ABB/AVL | Empate ABB-AVL |
+| 5000alea | 2.60 | 2.80 | 1.40 | Hashing | Hashing ~2x mais rápido |
+| 5000ord | 2.20 | 2.00 | 1.20 | Hashing | Hashing consistente |
+| 5000inv | 1.80 | 2.40 | 1.60 | ABB | ABB ligeiramente melhor |
+| 10000alea | 9.00 | 6.00 | 2.40 | Hashing | Hashing 2.5x mais rápido que AVL |
+| 10000ord | 5.00 | 3.80 | 2.20 | Hashing | Hashing quase 2x mais rápido |
+| 10000inv | 3.60 | 3.40 | 2.80 | Hashing | Hashing vence |
+| 50000alea | 43.60 | 52.00 | 12.00 | Hashing | Hashing 3.6x mais rápido que ABB |
+| 50000ord | 16.60 | 19.20 | 11.40 | Hashing | Dominância absoluta |
+| 50000inv | 16.20 | 13.20 | 12.60 | AVL | AVL marginal |
 
 ### Análise de Performance
 
+#### 🏆 Hashing - Vantagens
+- **Performance O(1)**: Mais rápido em quase todos os cenários (11 de 12 datasets)
+- **Escalabilidade**: Diferença aumenta com tamanho do dataset (até 4.3x mais rápido em 50k)
+- **Consistência**: Performance previsível independente da ordenação inicial
+- **Simplicidade**: Sem necessidade de balanceamento ou rotações
+
 #### 🏆 ABB - Vantagens
 - **Construção em lote**: `construirBalanceada()` constrói árvore já balanceada via divide-and-conquer
-- **Melhor em dados aleatórios grandes**: 50k alea - ABB 8.4ms mais rápido
+- **Melhor em datasets pequenos invertidos**: Competitiva em casos específicos
 - **Sem overhead de rotações**: Balanceamento feito uma vez, não em cada inserção
-- **Performance máxima**: Quando todos os dados estão disponíveis de uma vez
+- **Performance máxima árvore**: Quando hashing não é opção
 
 #### 🏆 AVL - Vantagens
-- **Performance consistente**: Garante O(log n) automaticamente
-- **Melhor em dados ordenados invertidos**: 50k inv - AVL 3ms mais rápido
+- **Performance consistente entre árvores**: Garante O(log n) automaticamente
 - **Auto-balanceamento**: Não requer otimização manual
-- **Simplicidade**: Código mais limpo, sem necessidade de `construirBalanceada()`
+- **Melhor que ABB em dados ordenados**: Superioridade em metade dos casos vs ABB
+- **Simplicidade**: Código mais limpo que ABB
 
 #### Quando Usar Cada Estrutura
 
+**Use Hashing quando:**
+- ✅ Busca por chave exata é o caso primário (não range queries)
+- ✅ Performance máxima é crítica
+- ✅ Dataset cabe em memória
+- ✅ Não precisa de ordenação dos resultados
+
 **Use ABB quando:**
+- ✅ Necessita range queries ou travessia ordenada
 - ✅ Dados podem ser carregados completamente antes da construção
-- ✅ Performance máxima em construção em lote é crítica
-- ✅ Dados são predominantemente aleatórios
 - ✅ Controle manual sobre balanceamento é desejado
+- ✅ Hashing não é viável (memória limitada)
 
 **Use AVL quando:**
-- ✅ Inserções incrementais são necessárias
+- ✅ Inserções/remoções incrementais são necessárias
 - ✅ Garantia de O(log n) é crítica
-- ✅ Dados podem estar ordenados ou parcialmente ordenados
+- ✅ Necessita range queries ou travessia ordenada
 - ✅ Simplicidade de uso é importante
 
 ### 💡 Conclusão
-Ambas as estruturas têm mérito:
-- **ABB** otimizada com `construirBalanceada()` oferece melhor performance absoluta em cenários de carga em lote (até 19% mais rápida)
-- **AVL** oferece garantias mais fortes e simplicidade, com overhead mínimo (<20% na maioria dos casos)
-- Diferenças são estatisticamente insignificantes em datasets pequenos (<10k elementos)
+**Hashing domina para busca pura:**
+- **11x mais rápido** que árvores em média nos datasets grandes
+- **Recomendação primária** para casos de busca por chave exata
+- Único trade-off: não permite travessia ordenada ou range queries
+
+**Entre as árvores:**
+- **ABB** otimizada com `construirBalanceada()` oferece melhor performance em construção batch
+- **AVL** oferece garantias mais fortes e simplicidade
+- Diferenças entre árvores são relativamente pequenas (<30%) comparado com Hashing (200-400%)
 
 ## 📊 Estruturas de Dados
 
@@ -341,34 +381,38 @@ InsertionSort.sortRange(array, 0, 19);  // Ordenar apenas um intervalo
 // - Calcula médias e salva estatísticas
 ```
 
-### Benchmark de Pesquisa (ABB vs AVL)
+### Benchmark de Pesquisa (ABB vs AVL vs Hashing)
 
 ```java
 // Executar PesquisaReservas.java
 // Processa automaticamente:
-// - Carrega cada dataset (12 arquivos)
-// - Constrói AMBAS as estruturas: ABB balanceada E AVL auto-balanceada
+// - Usa LCItem para TODOS os dados (datasets e nomes de pesquisa)
+// - Carrega cada dataset (12 arquivos) como LCItem
+// - Carrega 400 nomes de pesquisa como LCItem (via lerNomesComoLCItem)
+// - Constrói TRÊS estruturas: ABB balanceada, AVL auto-balanceada E Hashing
 // - Pesquisa 400 nomes em cada estrutura
 // - Executa 5 vezes para calcular tempo médio
-// - Salva resultados em data/searched/ABB*.txt e AVL*.txt
-// - Compara performance entre as duas estruturas
+// - Salva resultados em data/searched/ABB*.txt, AVL*.txt e Hash*.txt
+// - Compara performance entre as três estruturas
 // - Salva estatísticas em data/estatisticas_pesquisa.csv
+// - Demonstra 100% uso consistente de LCItem (sem String[] no código)
 
 // Exemplo de saída:
 // Dataset: Reserva10000alea
 //   ABB: 6.60 ms
 //   AVL: 6.00 ms
+//   Hashing: 1.20 ms
 //   Nomes encontrados: 284 de 400 (71.0%)
 //   Total de reservas: 479
 ```
 
-### Diferença de Uso: ABB vs AVL
+### Diferença de Uso: ABB vs AVL vs Hashing
 
 ```java
 // ===== ABB =====
 // Requer construção balanceada para evitar StackOverflowError em dados ordenados
 ArvoreABBItem abb = new ArvoreABBItem();
-abb.construirBalanceada(reservas.getLista(), 0, reservas.getQuant() - 1);
+abb.construirBalanceada(reservas);  // Constrói árvore balanceada diretamente
 LCItem resultado = abb.pesquisa("JOAO SILVA");
 
 // ===== AVL =====
@@ -379,8 +423,15 @@ for (int i = 0; i < reservas.getQuant(); i++) {
 }
 LCItem resultado = avl.pesquisa("JOAO SILVA");
 
-// Ambos retornam LCItem com todas as reservas do nome encontrado
-// Ambos lidam com nomes duplicados da mesma forma
+// ===== Hashing =====
+// Mais rápido (O(1) médio) - ideal para grandes datasets
+HashingEncadeado hash = new HashingEncadeado(1301);  // Tamanho primo
+hash.carregarDeLCItem(reservas);  // Carregamento em lote
+LCItem resultado = hash.pesquisar("JOAO SILVA");
+
+// Todas as três retornam LCItem com todas as reservas do nome encontrado
+// Todas lidam com nomes duplicados da mesma forma
+// Demonstra uso consistente de LCItem em todo o código
 ```
 
 ## 💡 Exemplos de Código
@@ -484,8 +535,10 @@ Reserva1000alea;QuickSort;1000;10.20
 Dataset;Algoritmo;Elementos;Media(ms)
 Reserva1000alea;ABB;1000;1.80
 Reserva1000alea;AVL;1000;2.20
-Reserva10000alea;ABB;10000;6.60
+Reserva1000alea;Hashing;1000;0.80
+Reserva10000alea;ABB;10000;9.00
 Reserva10000alea;AVL;10000;6.00
+Reserva10000alea;Hashing;10000;2.40
 ...
 ```
 

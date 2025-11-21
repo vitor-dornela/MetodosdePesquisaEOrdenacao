@@ -43,14 +43,16 @@ listaInt.quicksort();  // Calls QuickSort.sort(this.lista, this.quant)
   - `HeapSort`, `QuickSort`, `InsertionSort`
   - `QuickSortComInsercao` (≤20)
 - `br.faesa.C3.algoritmos.helper` - File I/O utilities (`LeArquivo`, `EscreveArquivo`)
+  - Fully refactored to work with `LCItem` structures throughout
 - `br.faesa.C3.algoritmos.pesquisa.AVL` - AVL tree implementation
 - `br.faesa.C3.algoritmos.pesquisa.ABB` - Binary search tree implementation
 - `br.faesa.C3.algoritmos.pesquisa.Hashing` - Hash table with chaining implementation
 - `data/` - Data files (separate from source code):
   - `data/raw/` - Input datasets (read via file system)
   - `data/sorted/` - Sorted output files
-  - `data/searched/` - Search result files
-  - `data/estatisticas.csv` - Performance statistics
+  - `data/searched/` - Search result files (ABB, AVL, Hash prefixes)
+  - `data/estatisticas_ordenacao.csv` - Sorting performance statistics
+  - `data/estatisticas_pesquisa.csv` - Search performance statistics (ABB + AVL + Hashing)
 
 ### Naming & Style
 - Portuguese naming throughout (e.g., `insereFinal()`, `eVazia()`, `fatorBalanceamento`)
@@ -60,14 +62,20 @@ listaInt.quicksort();  // Calls QuickSort.sort(this.lista, this.quant)
 
 ### File I/O Patterns
 ```java
-// Reading (from file system)
+// Reading reservations (from file system)
 LCItem reservas = LeArquivo.lerReservas("data/raw/Reserva1000alea.txt");
 
-// Writing (to file system)
+// Reading names as LCItem (NEW - fully integrated with LCItem)
+LCItem nomes = LeArquivo.lerNomesComoLCItem("data/raw/nome.txt");
+
+// Writing reservations (to file system)
 EscreveArquivo.salvarReservas(lista, "data/sorted/output.txt");
 
+// Writing search results (accepts LCItem directly - no String[] conversion needed)
+EscreveArquivo.salvarResultadosPesquisa("output.txt", nomesPesquisa, resultados);
+
 // Statistics
-EscreveArquivo.salvarEstatisticas("data/estatisticas.csv", dataset, algo, media, count, firstLine);
+EscreveArquivo.salvarEstatisticas("data/estatisticas_ordenacao.csv", dataset, algo, media, count, firstLine);
 ```
 
 ## Working with Data
@@ -175,20 +183,24 @@ Multiple dataset sizes with three orderings each:
 
 #### `PesquisaReservas.java` - Search Performance Comparison
 - Compares 3 search structures (ABB, AVL, Hashing) across 12 datasets
+- **Uses LCItem throughout** - no String[] arrays (except Java main signature)
 - For each dataset:
-  1. Loads reservas from file
-  2. Builds search structure
-  3. Searches 400 names from `nome.txt`
-  4. Repeats 5 times for average timing
-  5. Saves results to `data/searched/`
+  1. Loads reservas from file as LCItem
+  2. Loads search names as LCItem (via `lerNomesComoLCItem()`)
+  3. Builds all 3 search structures
+  4. Searches 400 names from `nome.txt` in each structure
+  5. Repeats 5 times for average timing
+  6. Saves results to `data/searched/` (ABB*, AVL*, Hash* prefixes)
 - Appends statistics to `data/estatisticas_pesquisa.csv`
+- Demonstrates 100% consistent use of LCItem data structure
 
 **Expected Output:**
 ```
 === PROCESSANDO: Reserva1000alea ===
-  ABB: 45.20 ms
-  AVL: 48.60 ms
-  Hashing: 23.40 ms
+  ABB: 2.00 ms
+  AVL: 1.60 ms
+  Hashing: 0.80 ms
+  Nomes encontrados: 140 de 400 (35.0%)
 ```
 
 ### Output Files
@@ -196,13 +208,15 @@ Multiple dataset sizes with three orderings each:
 - `data/sorted/heap*.txt` - HeapSort results
 - `data/sorted/quick*.txt` - QuickSort results
 - `data/sorted/QuickIns*.txt` - QuickSortComInsercao results
-- `data/estatisticas.csv` - CSV: Dataset, Algoritmo, Elementos, Media(ms)
+- `data/estatisticas_ordenacao.csv` - CSV: Dataset, Algoritmo, Elementos, Media(ms)
 
 **Searching:**
-- `data/searched/ABB*.txt` - ABB search results
-- `data/searched/AVL*.txt` - AVL search results
-- `data/searched/Hash*.txt` - Hashing search results
+- `data/searched/ABB*.txt` - ABB search results (12 files)
+- `data/searched/AVL*.txt` - AVL search results (12 files)
+- `data/searched/Hash*.txt` - Hashing search results (12 files)
 - `data/estatisticas_pesquisa.csv` - CSV: Dataset, Algoritmo, Elementos, Media(ms)
+  - Contains results for all 3 structures (ABB, AVL, Hashing)
+  - Single unified statistics file for search comparison
 
 ## Adding New Features
 
@@ -232,3 +246,7 @@ Create new package under `br.faesa.C3.algoritmos.pesquisa` with separate node an
 - **Delegation pattern**: Data structures delegate to standalone algorithm classes
 - **No code duplication**: Shared logic extracted to reusable classes
 - **Clean architecture**: `src/` for code, `data/` for datasets and results
+- **100% LCItem integration**: All user-facing data uses LCItem structures
+  - File I/O methods accept LCItem directly
+  - No String[] arrays except Java main(String[] args) requirement
+  - Demonstrates practical mastery of implemented data structures
