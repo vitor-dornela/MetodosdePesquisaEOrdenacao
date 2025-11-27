@@ -4,6 +4,9 @@
 # GitHub config
 .github/
 
+# Compiled output
+bin/
+
 # Compiled class files
 *.class
 
