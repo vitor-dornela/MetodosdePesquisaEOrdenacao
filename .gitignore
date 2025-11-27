@@ -1,0 +1,28 @@
+# IDE
+.idea/
+
+# GitHub config
+.github/
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Build directories
+out/
+target/
+build/
+
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
