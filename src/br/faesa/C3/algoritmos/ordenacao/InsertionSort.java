@@ -1,22 +1,22 @@
 package br.faesa.C3.algoritmos.ordenacao;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 
 public class InsertionSort {
 
     /**
      * InsertionSort para um array completo de Item.
      */
-    public static void sort(Item[] array, int size) {
+    public static void sort(Reserva[] array, int size) {
         sortRange(array, 0, size - 1);
     }
 
     /**
      * InsertionSort para um intervalo específico de um array de Item.
      */
-    public static void sortRange(Item[] array, int inicio, int fim) {
+    public static void sortRange(Reserva[] array, int inicio, int fim) {
         for (int i = inicio + 1; i <= fim; i++) {
-            Item temp = array[i];
+            Reserva temp = array[i];
             int j = i - 1;
 
             // Desloca os elementos maiores para a direita

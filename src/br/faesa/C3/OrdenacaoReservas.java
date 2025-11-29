@@ -14,24 +14,24 @@ public class OrdenacaoReservas {
     public static void main(String[] args) {
         // Lista com todos os datasets disponíveis
         LCItem datasets = new LCItem(12);
-        datasets.insereFinal(new Item(0, "Reserva1000alea"));
-        datasets.insereFinal(new Item(0, "Reserva1000ord"));
-        datasets.insereFinal(new Item(0, "Reserva1000inv"));
-        datasets.insereFinal(new Item(0, "Reserva5000alea"));
-        datasets.insereFinal(new Item(0, "Reserva5000ord"));
-        datasets.insereFinal(new Item(0, "Reserva5000inv"));
-        datasets.insereFinal(new Item(0, "Reserva10000alea"));
-        datasets.insereFinal(new Item(0, "Reserva10000ord"));
-        datasets.insereFinal(new Item(0, "Reserva10000inv"));
-        datasets.insereFinal(new Item(0, "Reserva50000alea"));
-        datasets.insereFinal(new Item(0, "Reserva50000ord"));
-        datasets.insereFinal(new Item(0, "Reserva50000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000inv"));
 
         // Lista com todos os algoritmos
         LCItem algoritmos = new LCItem(3);
-        algoritmos.insereFinal(new Item(0, "HeapSort"));
-        algoritmos.insereFinal(new Item(0, "QuickSort"));
-        algoritmos.insereFinal(new Item(0, "QuickSortInsertion"));
+        algoritmos.insereFinal(new Reserva(0, "HeapSort"));
+        algoritmos.insereFinal(new Reserva(0, "QuickSort"));
+        algoritmos.insereFinal(new Reserva(0, "QuickSortInsertion"));
 
         // Processa cada dataset com todos os algoritmos
         for (int i = 0; i < datasets.getQuant(); i++) {

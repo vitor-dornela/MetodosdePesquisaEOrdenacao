@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 /**
@@ -22,7 +22,7 @@ public class EscreveArquivo {
     public static void salvarReservas(LCItem lista, String caminhoArquivo) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
             for (int i = 0; i < lista.getQuant(); i++) {
-                Item item = lista.getItem(i);
+                Reserva item = lista.getItem(i);
                 writer.write(item.toString());
                 writer.newLine();
             }
@@ -48,7 +48,7 @@ public class EscreveArquivo {
             }
             
             for (int i = 0; i < lista.getQuant(); i++) {
-                Item item = lista.getItem(i);
+                Reserva item = lista.getItem(i);
                 writer.write(item.toString());
                 writer.newLine();
             }
@@ -98,7 +98,7 @@ public class EscreveArquivo {
             sb.append("NÃO TEM RESERVA\n");
         } else {
             for (int i = 0; i < reservas.getQuant(); i++) {
-                Item item = reservas.getItem(i);
+                Reserva item = reservas.getItem(i);
                 sb.append(String.format("Reserva: %s Voo: %s Data: %s Assento: %s\n",
                     item.getChave(),
                     item.getCodigoVoo(),

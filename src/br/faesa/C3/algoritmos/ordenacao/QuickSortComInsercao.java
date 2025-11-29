@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.ordenacao;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 
 public class QuickSortComInsercao {
 
@@ -8,18 +8,18 @@ public class QuickSortComInsercao {
      * Ordena um array de Item usando QuickSort com InsertionSort para partições pequenas.
      * Quando a partição tem 20 ou menos elementos, usa InsertionSort.
      */
-    public static void sort(Item[] array, int size) {
+    public static void sort(Reserva[] array, int size) {
         quicksortComInsercao(array, 0, size - 1);
     }
 
-    private static void quicksortComInsercao(Item[] array, int esq, int dir) {
+    private static void quicksortComInsercao(Reserva[] array, int esq, int dir) {
         // Se a partição tem 20 ou menos elementos, usa InsertionSort
         if (dir - esq <= 20) {
             InsertionSort.sortRange(array, esq, dir);
             return;
         }
 
-        Item pivo, temp;
+        Reserva pivo, temp;
         int i = esq, j = dir;
 
         // 1. Escolhe o pivô (elemento do meio)

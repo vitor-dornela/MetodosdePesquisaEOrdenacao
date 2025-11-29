@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.AVL;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.NoArvoreBase;
 
 /**
@@ -11,7 +11,7 @@ import br.faesa.C3.entidades.NoArvoreBase;
 public class NoAVLItem extends NoArvoreBase<NoAVLItem> {
     private int fatorBalanceamento;
 
-    public NoAVLItem(Item item) {
+    public NoAVLItem(Reserva item) {
         super(item);
         this.fatorBalanceamento = 0;
     }

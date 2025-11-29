@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.ordenacao;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.Ordenavel;
 
 public class HeapSort {
@@ -17,9 +17,9 @@ public class HeapSort {
     /**
      * Ordena um array de Item usando HeapSort.
      */
-    public static void sort(Item[] array, int size) {
+    public static void sort(Reserva[] array, int size) {
         int dir = size - 1, esq = (dir - 1) / 2;
-        Item temp;
+        Reserva temp;
 
         while (esq >= 0) {
             refazheap(array, esq, size - 1);
@@ -35,9 +35,9 @@ public class HeapSort {
         }
     }
 
-    private static void refazheap(Item[] array, int esq, int dir) {
+    private static void refazheap(Reserva[] array, int esq, int dir) {
         int i = esq, maiorFilho = 2 * i + 1;
-        Item raiz = array[i];
+        Reserva raiz = array[i];
         boolean heap = false;
 
         while ((maiorFilho <= dir) && (!heap)) {

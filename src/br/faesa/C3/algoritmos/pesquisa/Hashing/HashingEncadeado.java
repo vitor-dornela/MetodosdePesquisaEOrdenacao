@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.Hashing;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 /**
@@ -42,7 +42,7 @@ public class HashingEncadeado {
      * Se o nome já existe, adiciona à lista de reservas existente.
      * Caso contrário, cria um novo nó no início da lista encadeada.
      */
-    public void inserir(Item item) {
+    public void inserir(Reserva item) {
         if (item == null || estaVazia(item.getNome())) {
             return;
         }
@@ -168,5 +168,68 @@ public class HashingEncadeado {
             (posicoesVazias * 100 / tamanho) + "%)");
         System.out.println("Máximo em uma lista: " + maxColisoes);
         System.out.println("Total de colisões: " + totalColisoes);
+    }
+
+    // ========== Métodos estáticos para cálculo de tamanho primo ==========
+
+    /**
+     * Calcula o próximo número primo maior ou igual ao valor fornecido.
+     * Usado para definir tamanho ótimo da tabela hash.
+     * 
+     * @param n Número de elementos esperados
+     * @return Número primo próximo a n * 1.1 (fator de carga ~0.9)
+     */
+    public static int calcularTamanhoPrimo(int n) {
+        // Ajusta para um valor próximo (fator 1.1 para lista encadeada)
+        int candidato = (int) (n * 1.1);
+        
+        // Garante que seja ímpar
+        if (candidato % 2 == 0) {
+            candidato++;
+        }
+        
+        // Busca o próximo primo
+        while (!ehPrimo(candidato)) {
+            candidato += 2;
+        }
+        
+        return candidato;
+    }
+
+    /**
+     * Verifica se um número é primo.
+     */
+    public static boolean ehPrimo(int n) {
+        if (n < 2) {
+            return false;
+        }
+        if (n == 2) {
+            return true;
+        }
+        if (n % 2 == 0) {
+            return false;
+        }
+        
+        int raiz = (int) Math.sqrt(n);
+        for (int i = 3; i <= raiz; i += 2) {
+            if (n % i == 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Pesquisa todos os nomes de um LCItem e retorna os resultados.
+     * @param nomes LCItem contendo os nomes a pesquisar
+     * @return Array de LCItem com os resultados de cada pesquisa
+     */
+    public LCItem[] pesquisarTodos(LCItem nomes) {
+        LCItem[] resultados = new LCItem[nomes.getQuant()];
+        for (int i = 0; i < nomes.getQuant(); i++) {
+            resultados[i] = pesquisar(nomes.getItem(i).getNome());
+        }
+        return resultados;
     }
 }

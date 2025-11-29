@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.AVL;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 public class ArvoreAVLItem {
@@ -45,7 +45,7 @@ public class ArvoreAVLItem {
      * Insere um item na árvore AVL
      * Se o nome já existe, adiciona à lista de reservas do nó
      */
-    public void insere(Item item) {
+    public void insere(Reserva item) {
         // Verifica se o nome já existe
         NoAVLItem noExistente = pesquisar(item.getNome(), this.raiz);
         if (noExistente != null) {
@@ -58,7 +58,7 @@ public class ArvoreAVLItem {
         }
     }
 
-    private NoAVLItem inserir(Item item, NoAVLItem no) {
+    private NoAVLItem inserir(Reserva item, NoAVLItem no) {
         if (no == null) {
             NoAVLItem novo = new NoAVLItem(item);
             this.balancear = true;
@@ -246,5 +246,28 @@ public class ArvoreAVLItem {
                 mostrarEstruturaRecursivo(no.getEsq(), novoPrefixo, true);
             }
         }
+    }
+
+    /**
+     * Carrega todas as reservas de um LCItem na árvore AVL.
+     * Método de conveniência para carregar dados em lote.
+     */
+    public void carregarDeLCItem(LCItem reservas) {
+        for (int i = 0; i < reservas.getQuant(); i++) {
+            insere(reservas.getItem(i));
+        }
+    }
+
+    /**
+     * Pesquisa todos os nomes de um LCItem e retorna os resultados.
+     * @param nomes LCItem contendo os nomes a pesquisar
+     * @return Array de LCItem com os resultados de cada pesquisa
+     */
+    public LCItem[] pesquisarTodos(LCItem nomes) {
+        LCItem[] resultados = new LCItem[nomes.getQuant()];
+        for (int i = 0; i < nomes.getQuant(); i++) {
+            resultados[i] = pesquisa(nomes.getItem(i).getNome());
+        }
+        return resultados;
     }
 }

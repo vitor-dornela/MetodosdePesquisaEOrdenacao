@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.Hashing;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 /**
@@ -12,7 +12,7 @@ public class NoHash {
     private LCItem reservas;
     private NoHash prox;
 
-    public NoHash(Item item) {
+    public NoHash(Reserva item) {
         this.nome = item.getNome();
         this.reservas = new LCItem(5);
         this.reservas.insereFinal(item);

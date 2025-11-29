@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.ABB;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 public class ArvoreABBItem {
@@ -33,7 +33,7 @@ public class ArvoreABBItem {
         return pesquisa(nome, no.getEsq());
     }
 
-    public boolean insere(Item item) {
+    public boolean insere(Reserva item) {
         NoABBItem noExistente = pesquisa(item.getNome(), this.raiz);
         if (noExistente == null) {
             this.raiz = insere(item, this.raiz);
@@ -45,7 +45,7 @@ public class ArvoreABBItem {
         }
     }
 
-    private NoABBItem insere(Item item, NoABBItem no) {
+    private NoABBItem insere(Reserva item, NoABBItem no) {
         if (no == null) {
             NoABBItem novo = new NoABBItem(item);
             this.quant++;
@@ -189,5 +189,18 @@ public class ArvoreABBItem {
 
     public int getQuant() {
         return quant;
+    }
+
+    /**
+     * Pesquisa todos os nomes de um LCItem e retorna os resultados.
+     * @param nomes LCItem contendo os nomes a pesquisar
+     * @return Array de LCItem com os resultados de cada pesquisa
+     */
+    public LCItem[] pesquisarTodos(LCItem nomes) {
+        LCItem[] resultados = new LCItem[nomes.getQuant()];
+        for (int i = 0; i < nomes.getQuant(); i++) {
+            resultados[i] = pesquisa(nomes.getItem(i).getNome());
+        }
+        return resultados;
     }
 }

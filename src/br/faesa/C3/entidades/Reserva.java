@@ -1,6 +1,6 @@
 package br.faesa.C3.entidades;
 
-public class Item implements Comparable<Item> {
+public class Reserva implements Comparable<Reserva> {
     private String chave;      // Ex: R000001
     private String nome;       // Ex: RUI CUNHA CASTRO MARTINHO
     private String codigo_voo;    // Ex: V947
@@ -8,7 +8,7 @@ public class Item implements Comparable<Item> {
     private String assento;    // Ex: 167C
 
     // Construtor completo para reservas
-    public Item(String chave, String nome, String codigo_voo, String data, String assento) {
+    public Reserva(String chave, String nome, String codigo_voo, String data, String assento) {
         this.chave = chave;
         this.nome = nome;
         this.codigo_voo = codigo_voo;
@@ -17,7 +17,7 @@ public class Item implements Comparable<Item> {
     }
 
     // Construtor simplificado (compatibilidade)
-    public Item(int codigo, String nome) {
+    public Reserva(int codigo, String nome) {
         this.chave = String.format("R%06d", codigo);
         this.nome = nome;
         this.codigo_voo = "";
@@ -82,7 +82,7 @@ public class Item implements Comparable<Item> {
      * Compara itens por nome (ordem alfabética) e, em caso de empate, por chave.
      */
     @Override
-    public int compareTo(Item outro) {
+    public int compareTo(Reserva outro) {
         if (outro == null) {
             return 1;
         }

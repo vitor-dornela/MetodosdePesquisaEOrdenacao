@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.ordenacao;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.Ordenavel;
 
 public class QuickSort {
@@ -17,12 +17,12 @@ public class QuickSort {
     /**
      * Ordena um array de Item usando QuickSort.
      */
-    public static void sort(Item[] array, int size) {
+    public static void sort(Reserva[] array, int size) {
         ordena(array, 0, size - 1);
     }
 
-    private static void ordena(Item[] array, int esq, int dir) {
-        Item pivo, temp;
+    private static void ordena(Reserva[] array, int esq, int dir) {
+        Reserva pivo, temp;
         int i = esq, j = dir;
 
         // 1. Escolhe o pivô (elemento do meio)

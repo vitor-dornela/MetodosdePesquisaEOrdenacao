@@ -1,6 +1,6 @@
 package br.faesa.C3.algoritmos.pesquisa.ABB;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.NoArvoreBase;
 
 /**
@@ -9,7 +9,7 @@ import br.faesa.C3.entidades.NoArvoreBase;
  */
 public class NoABBItem extends NoArvoreBase<NoABBItem> {
 
-    public NoABBItem(Item item) {
+    public NoABBItem(Reserva item) {
         super(item);
     }
 }

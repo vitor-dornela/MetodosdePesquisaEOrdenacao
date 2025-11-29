@@ -2,7 +2,7 @@
 .idea/
 
 # GitHub config
-.github/
+#.github/
 
 # Compiled output
 bin/

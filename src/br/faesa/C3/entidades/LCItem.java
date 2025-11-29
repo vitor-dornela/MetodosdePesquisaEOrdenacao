@@ -4,16 +4,16 @@ import br.faesa.C3.algoritmos.ordenacao.*;
 
 public class LCItem implements Ordenavel {
 
-    private Item[] lista;
+    private Reserva[] lista;
     private int quant;
 
     public LCItem() {
-        this.lista = new Item[10];
+        this.lista = new Reserva[10];
         this.quant = 0;
     }
 
     public LCItem(int tamanho) {
-        this.lista = new Item[tamanho];
+        this.lista = new Reserva[tamanho];
         this.quant = 0;
     }
 
@@ -33,7 +33,7 @@ public class LCItem implements Ordenavel {
         return this.getQuant() == this.tamanho();
     }
 
-    public Item getItem(int posicao) {
+    public Reserva getItem(int posicao) {
         if (posicao < 0 || posicao >= this.tamanho()) {
             return null;
         }
@@ -55,14 +55,14 @@ public class LCItem implements Ordenavel {
 
     private void aumentaLista() {
         int novoTamanho = (int) (this.quant * 1.5);
-        Item[] novaLista = new Item[novoTamanho];
+        Reserva[] novaLista = new Reserva[novoTamanho];
         for (int i = 0; i < quant; i++) {
             novaLista[i] = this.lista[i];
         }
         this.lista = novaLista;
     }
 
-    public void insereFinal(Item item) {
+    public void insereFinal(Reserva item) {
         if (eCheia()) {
             aumentaLista();
         }
@@ -78,7 +78,7 @@ public class LCItem implements Ordenavel {
      * false.
      */
 
-    public boolean insere(int position, Item item) {
+    public boolean insere(int position, Reserva item) {
         if (position < 0 || position > this.quant) { // a lista só pode ser preenchida continuamente
             return false;
         }
@@ -94,7 +94,7 @@ public class LCItem implements Ordenavel {
         return true;
     }
 
-    public void insereInicio(Item item) {
+    public void insereInicio(Reserva item) {
         insere(0, item);
     }
 
@@ -102,8 +102,8 @@ public class LCItem implements Ordenavel {
      * remove (pos) => deve remover um elemento que está na posição pos da lista. Se
      * conseguir, deve retornar o Item removido, se não conseguir, retorna null.
      */
-    public Item remover(int posicao) {
-        Item aux;
+    public Reserva remover(int posicao) {
+        Reserva aux;
         if (posicao < 0 || posicao >= this.quant) {
             return null;
         }
@@ -122,7 +122,7 @@ public class LCItem implements Ordenavel {
      * conseguir, deve retornar o Item removido, se não conseguir, retorna null.
      */
 
-    public Item removerCod(int cod) {
+    public Reserva removerCod(int cod) {
         int posicao = pesquisa(cod);
         if (posicao == -1) {
             return null;
@@ -174,7 +174,7 @@ public class LCItem implements Ordenavel {
     /**
      * Retorna o array interno (útil para operações diretas).
      */
-    public Item[] getLista() {
+    public Reserva[] getLista() {
         return this.lista;
     }
 

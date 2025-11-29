@@ -11,7 +11,7 @@ public abstract class NoArvoreBase<T extends NoArvoreBase<T>> {
     protected LCItem reservas;
     protected T esq, dir;
 
-    public NoArvoreBase(Item item) {
+    public NoArvoreBase(Reserva item) {
         this.nome = item.getNome();
         this.reservas = new LCItem(5);
         this.reservas.insereFinal(item);

@@ -5,7 +5,7 @@ import java.io.IOException;
 import br.faesa.C3.algoritmos.pesquisa.ABB.ArvoreABBItem;
 import br.faesa.C3.algoritmos.pesquisa.AVL.ArvoreAVLItem;
 import br.faesa.C3.algoritmos.pesquisa.Hashing.HashingEncadeado;
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 import br.faesa.C3.helper.EscreveArquivo;
 import br.faesa.C3.helper.LeArquivo;
@@ -31,18 +31,18 @@ public class PesquisaReservas {
     public static void main(String[] args) {
         // Datasets a processar (usando LCItem para consistência)
         LCItem datasets = new LCItem(12);
-        datasets.insereFinal(new Item(0, "Reserva1000alea"));
-        datasets.insereFinal(new Item(0, "Reserva1000ord"));
-        datasets.insereFinal(new Item(0, "Reserva1000inv"));
-        datasets.insereFinal(new Item(0, "Reserva5000alea"));
-        datasets.insereFinal(new Item(0, "Reserva5000ord"));
-        datasets.insereFinal(new Item(0, "Reserva5000inv"));
-        datasets.insereFinal(new Item(0, "Reserva10000alea"));
-        datasets.insereFinal(new Item(0, "Reserva10000ord"));
-        datasets.insereFinal(new Item(0, "Reserva10000inv"));
-        datasets.insereFinal(new Item(0, "Reserva50000alea"));
-        datasets.insereFinal(new Item(0, "Reserva50000ord"));
-        datasets.insereFinal(new Item(0, "Reserva50000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva1000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva5000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva10000inv"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000alea"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000ord"));
+        datasets.insereFinal(new Reserva(0, "Reserva50000inv"));
 
         // Carrega os nomes a pesquisar (uma única vez) usando LCItem
         LCItem nomesPesquisa = LeArquivo.lerNomesComoLCItem(CAMINHO_NOMES);
@@ -95,12 +95,8 @@ public class PesquisaReservas {
             ArvoreABBItem abb = new ArvoreABBItem();
             abb.construirBalanceada(reservas);
 
-            // Realiza as pesquisas usando LCItem de nomes
-            resultadosPesquisaABB = new LCItem[nomesPesquisa.getQuant()];
-            for (int i = 0; i < nomesPesquisa.getQuant(); i++) {
-                String nome = nomesPesquisa.getItem(i).getNome();
-                resultadosPesquisaABB[i] = abb.pesquisa(nome);
-            }
+            // Realiza as pesquisas
+            resultadosPesquisaABB = abb.pesquisarTodos(nomesPesquisa);
 
             long fim = System.currentTimeMillis();
             tempoTotalABB += (fim - inicio);
@@ -119,18 +115,12 @@ public class PesquisaReservas {
         for (int exec = 0; exec < NUM_EXECUCOES; exec++) {
             long inicio = System.currentTimeMillis();
 
-            // Constrói AVL (auto-balanceada) inserindo cada item da lista
+            // Constrói AVL (auto-balanceada)
             ArvoreAVLItem avl = new ArvoreAVLItem();
-            for (int i = 0; i < reservas.getQuant(); i++) {
-                avl.insere(reservas.getItem(i));
-            }
+            avl.carregarDeLCItem(reservas);
 
-            // Realiza as pesquisas usando LCItem de nomes
-            resultadosPesquisaAVL = new LCItem[nomesPesquisa.getQuant()];
-            for (int i = 0; i < nomesPesquisa.getQuant(); i++) {
-                String nome = nomesPesquisa.getItem(i).getNome();
-                resultadosPesquisaAVL[i] = avl.pesquisa(nome);
-            }
+            // Realiza as pesquisas
+            resultadosPesquisaAVL = avl.pesquisarTodos(nomesPesquisa);
 
             long fim = System.currentTimeMillis();
             tempoTotalAVL += (fim - inicio);
@@ -150,17 +140,12 @@ public class PesquisaReservas {
             long inicio = System.currentTimeMillis();
 
             // Constrói Hashing Encadeado
-            // Tamanho da tabela: número primo próximo ao tamanho do dataset
-            int tamanhoTabela = calcularTamanhoPrimo(reservas.getQuant());
+            int tamanhoTabela = HashingEncadeado.calcularTamanhoPrimo(reservas.getQuant());
             HashingEncadeado hash = new HashingEncadeado(tamanhoTabela);
             hash.carregarDeLCItem(reservas);
 
-            // Realiza as pesquisas usando LCItem de nomes
-            resultadosPesquisaHash = new LCItem[nomesPesquisa.getQuant()];
-            for (int i = 0; i < nomesPesquisa.getQuant(); i++) {
-                String nome = nomesPesquisa.getItem(i).getNome();
-                resultadosPesquisaHash[i] = hash.pesquisar(nome);
-            }
+            // Realiza as pesquisas
+            resultadosPesquisaHash = hash.pesquisarTodos(nomesPesquisa);
 
             long fim = System.currentTimeMillis();
             tempoTotalHash += (fim - inicio);
@@ -173,33 +158,19 @@ public class PesquisaReservas {
         EscreveArquivo.salvarResultadosPesquisa(caminhoSaidaHash, nomesPesquisa, resultadosPesquisaHash);
 
         // ========== Estatísticas ==========
-        // Salva todas as estruturas no mesmo arquivo
-        EscreveArquivo.salvarEstatisticas(
-            CAMINHO_ESTATISTICAS,
-            nomeDataset,
-            "ABB",
-            mediaABB,
-            reservas.getQuant(),
-            primeiraLinha
-        );
+        String[] algoritmos = {"ABB", "AVL", "Hashing"};
+        double[] medias = {mediaABB, mediaAVL, mediaHash};
         
-        EscreveArquivo.salvarEstatisticas(
-            CAMINHO_ESTATISTICAS,
-            nomeDataset,
-            "AVL",
-            mediaAVL,
-            reservas.getQuant(),
-            false // Nunca primeira linha para AVL
-        );
-        
-        EscreveArquivo.salvarEstatisticas(
-            CAMINHO_ESTATISTICAS,
-            nomeDataset,
-            "Hashing",
-            mediaHash,
-            reservas.getQuant(),
-            false // Nunca primeira linha para Hashing
-        );
+        for (int i = 0; i < algoritmos.length; i++) {
+            EscreveArquivo.salvarEstatisticas(
+                CAMINHO_ESTATISTICAS,
+                nomeDataset,
+                algoritmos[i],
+                medias[i],
+                reservas.getQuant(),
+                primeiraLinha && i == 0  // Só primeira linha no primeiro algoritmo
+            );
+        }
 
         // Conta quantos nomes foram encontrados (usando resultados ABB)
         int encontrados = 0;
@@ -214,50 +185,5 @@ public class PesquisaReservas {
             encontrados, nomesPesquisa.getQuant(), 
             (encontrados * 100.0) / nomesPesquisa.getQuant());
         System.out.println("  Total de reservas: " + totalReservasEncontradas);
-    }
-
-    /**
-     * Calcula o próximo número primo maior ou igual ao valor fornecido.
-     * Usado para definir tamanho ótimo da tabela hash.
-     */
-    private static int calcularTamanhoPrimo(int n) {
-        // Ajusta para um valor próximo (Para lista encadeada será usado 1.1)
-        int candidato = (int) (n * 1.0);
-        
-        // Garante que seja ímpar
-        if (candidato % 2 == 0) {
-            candidato++;
-        }
-        
-        // Busca o próximo primo
-        while (!ehPrimo(candidato)) {
-            candidato += 2;
-        }
-        
-        return candidato;
-    }
-
-    /**
-     * Verifica se um número é primo.
-     */
-    private static boolean ehPrimo(int n) {
-        if (n < 2) {
-            return false;
-        }
-        if (n == 2) {
-            return true;
-        }
-        if (n % 2 == 0) {
-            return false;
-        }
-        
-        int raiz = (int) Math.sqrt(n);
-        for (int i = 3; i <= raiz; i += 2) {
-            if (n % i == 0) {
-                return false;
-            }
-        }
-        
-        return true;
     }
 }

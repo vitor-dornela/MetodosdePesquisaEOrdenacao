@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.faesa.C3.entidades.Item;
+import br.faesa.C3.entidades.Reserva;
 import br.faesa.C3.entidades.LCItem;
 
 /**
@@ -47,7 +47,7 @@ public class LeArquivo {
         LCItem lista = new LCItem(linhas.size());
         
         for (String linha : linhas) {
-            Item item = parseReserva(linha);
+            Reserva item = parseReserva(linha);
             if (item != null) {
                 lista.insereFinal(item);
             }
@@ -59,7 +59,7 @@ public class LeArquivo {
     /**
      * Faz o parse de uma linha no formato: R000001;NOME;V947;21/04/2024;167C
      */
-    private static Item parseReserva(String linha) {
+    private static Reserva parseReserva(String linha) {
         if (linha == null || linha.trim().isEmpty()) {
             return null;
         }
@@ -77,7 +77,7 @@ public class LeArquivo {
         String data = partes[3].trim();
         String assento = partes[4].trim();
         
-        return new Item(chave, nome, codigo_voo, data, assento);
+        return new Reserva(chave, nome, codigo_voo, data, assento);
     }
 
     /**
@@ -115,7 +115,7 @@ public class LeArquivo {
         int indice = 0;
         for (String linha : linhas) {
             if (linha != null && !linha.trim().isEmpty()) {
-                nomes.insereFinal(new Item(indice++, linha.trim()));
+                nomes.insereFinal(new Reserva(indice++, linha.trim()));
             }
         }
         
